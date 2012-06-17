@@ -22,12 +22,12 @@
 		987B6F8B158E9E50008463AD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		987B6F8C158E9E50008463AD /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		987B6F8D158E9E50008463AD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		987B6F90158E9E50008463AD /* SimilarImages-Info.plist */ = {isa = PBXFileReference; path = "SimilarImages-Info.plist"; sourceTree = "<group>"; };
+		987B6F90158E9E50008463AD /* SimilarImages-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SimilarImages-Info.plist"; sourceTree = "<group>"; };
 		987B6F92158E9E50008463AD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		987B6F94158E9E50008463AD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		987B6F96158E9E50008463AD /* SimilarImages-Prefix.pch */ = {isa = PBXFileReference; path = "SimilarImages-Prefix.pch"; sourceTree = "<group>"; };
+		987B6F96158E9E50008463AD /* SimilarImages-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimilarImages-Prefix.pch"; sourceTree = "<group>"; };
 		987B6F98158E9E50008463AD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		987B6F9A158E9E50008463AD /* SIDocument.h */ = {isa = PBXFileReference; path = SIDocument.h; sourceTree = "<group>"; };
+		987B6F9A158E9E50008463AD /* SIDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SIDocument.h; sourceTree = "<group>"; };
 		987B6F9B158E9E50008463AD /* SIDocument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SIDocument.m; sourceTree = "<group>"; };
 		987B6F9E158E9E50008463AD /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SIDocument.xib; sourceTree = "<group>"; };
 		987B6FA1158E9E51008463AD /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -84,10 +84,9 @@
 		987B6F8E158E9E50008463AD /* SimilarImages */ = {
 			isa = PBXGroup;
 			children = (
-				987B6F9A158E9E50008463AD /* SIDocument.h */,
-				987B6F9B158E9E50008463AD /* SIDocument.m */,
-				987B6F9D158E9E50008463AD /* SIDocument.xib */,
-				987B6FA0158E9E51008463AD /* MainMenu.xib */,
+				987B6FAA158E9E8C008463AD /* Controllers */,
+				987B6FA9158E9E87008463AD /* Models */,
+				987B6FA8158E9E71008463AD /* Views */,
 				987B6F8F158E9E50008463AD /* Supporting Files */,
 			);
 			path = SimilarImages;
@@ -103,6 +102,31 @@
 				987B6F97158E9E50008463AD /* Credits.rtf */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		987B6FA8158E9E71008463AD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				987B6FA0158E9E51008463AD /* MainMenu.xib */,
+				987B6F9D158E9E50008463AD /* SIDocument.xib */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		987B6FA9158E9E87008463AD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		987B6FAA158E9E8C008463AD /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				987B6F9A158E9E50008463AD /* SIDocument.h */,
+				987B6F9B158E9E50008463AD /* SIDocument.m */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
