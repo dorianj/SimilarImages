@@ -8,7 +8,7 @@
 
 @private
 	NSURL* _root;
-	volatile int64_t _unprocessedImageCount;
+	volatile int64_t _unprocessedImageCount, _processedImageCount;
 }
 
 @property (readonly) NSOperationQueue* processingQueue, * searchingQueue;

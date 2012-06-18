@@ -63,7 +63,7 @@
 			
 		progress_block([NSDictionary dictionaryWithObjectsAndKeys:
 						[NSNumber numberWithInteger:_unprocessedImageCount], @"fileCount",
-						[NSNumber numberWithInteger:[[self images] count]], @"completeCount",
+						[NSNumber numberWithInteger:_processedImageCount], @"completeCount",
 						[NSNumber numberWithBool:finished_searching], @"searchComplete", nil]);
 		
 		if (finished_searching && [[[self processingQueue] operations] count] == 0)
@@ -79,6 +79,11 @@
 	OSAtomicIncrement64Barrier(&_unprocessedImageCount);
 }
 
+- (void)addProcessedImage
+{
+	OSAtomicIncrement64Barrier(&_processedImageCount);
+}
+
 @end
 
 #pragma mark -
@@ -92,6 +97,7 @@
 	NSAssert([self imageURL] != nil, @"%@ needs an image to work with.", [self class]);
 	DJImageHash* imageHash = [[DJImageHash alloc] initWithImageURL:[self imageURL]];
 	
+	[[self owner] addProcessedImage];
 	@synchronized ([[self owner] images])
 	{
 		[[[self owner] images] addObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedLongLong:[imageHash imageHash]], @"hash", [self imageURL], @"url", nil]];
