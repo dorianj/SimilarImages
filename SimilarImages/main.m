@@ -1,10 +1,5 @@
-//
-//  main.m
-//  SimilarImages
-//
-//  Created by Dorian Johnson on 2012/6/17.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
+/*	Copyright 2012 Dorian Johnson <2012@dorianj.net>
+ */
 
 #import <Cocoa/Cocoa.h>
 
