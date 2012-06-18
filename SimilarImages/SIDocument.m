@@ -9,9 +9,9 @@
 
 #define HAMMING_DISTANCE(A,B)	({ unsigned long long __BD = (A) ^ (B); __builtin_popcountll(__BD); })
 
-
 @interface SIDocument ()
 
+@property (readwrite, retain) NSArray* observedKeys;
 
 // An array of all found images.
 @property (readwrite, retain) NSArray* images;
@@ -25,7 +25,7 @@
 @synthesize needleImagePicker, matchingImages, resultsImageBrowserView, rootURL, haystackPathControl;
 
 // Private properties.
-@synthesize images;
+@synthesize images, observedKeys;
 
 
 
@@ -34,15 +34,21 @@
     if ((self = [super init]) == nil)
 		return nil;
 	
-	// Observe matching images in order to update the browser when the results change
-	[self addObserver:self forKeyPath:@"matchingImages" options:NSKeyValueObservingOptionNew context:NULL];
+	[self setObservedKeys:[NSArray arrayWithObjects:
+						   @"matchingImages", // Observe matching images in order to update the browser when the results change
+						   @"rootURL",        // Observe changes to rootURL so we can re-scan.
+						   nil]];
 	
-	// Observe changes to rootURL so we can re-scan.
-	[self addObserver:self forKeyPath:@"rootURL" options:NSKeyValueObservingOptionNew context:NULL];
-
-
-//	[self performSelectorInBackground:@selector(trawlTestLibrary) withObject:nil];
+	for (NSString* keyPath in [self observedKeys])
+		[self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
+						   
     return self;
+}
+
+- (void)dealloc
+{
+	for (NSString* keyPath in [self observedKeys])
+		[self removeObserver:self forKeyPath:keyPath];
 }
 
 - (void)awakeFromNib
@@ -59,7 +65,10 @@
 		
 		[open_panel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result) {
 			if (result != NSOKButton)
+			{
 				[self close];
+				return;
+			}
 			
 			[self setRootURL:[open_panel URL]];
 		}];
@@ -71,7 +80,11 @@
 	if ([keyPath isEqualToString:@"matchingImages"])
 		[[self resultsImageBrowserView] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 	else if ([keyPath isEqualToString:@"rootURL"])
-		[self performSelectorOnMainThread:@selector(trawlRootURL) withObject:nil waitUntilDone:NO];
+	{
+		if ([self rootURL] != nil)
+			[self performSelectorOnMainThread:@selector(trawlRootURL) withObject:nil waitUntilDone:NO];
+	}
+		
 }
 
 
@@ -83,6 +96,7 @@
 - (void)showTrawlProgressSheet
 {
 	[[NSApplication sharedApplication] beginSheet:[self trawlProgressWindow] modalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+	[[self trawlProgressIndicator] startAnimation:self];
 }
 
 - (void)hideTrawlProgressSheet
@@ -92,15 +106,25 @@
 
 - (void)updateTrawlProgressSheet:(NSDictionary*)trawl_info
 {
+//	NSLog(@"%@", trawl_info);
 	if ([[trawl_info objectForKey:@"searchComplete"] boolValue])
 	{
-		[[self trawlProgressIndicator] setIndeterminate:NO];
-		[[self trawlProgressIndicator] setMinValue:0];
-		[[self trawlProgressIndicator] setMaxValue:[[trawl_info objectForKey:@"fileCount"] floatValue]];
-		[[self trawlProgressIndicator] setDoubleValue:[[trawl_info objectForKey:@"completeCount"] floatValue]];
+		if ([[self trawlProgressIndicator] isIndeterminate])
+		{
+			[[self trawlProgressIndicator] setIndeterminate:NO];
+			[[self trawlProgressIndicator] setMinValue:0];
+		}
+		
+		[[self trawlProgressIndicator] setMaxValue:[[trawl_info objectForKey:@"fileCount"] doubleValue]];
+		[[self trawlProgressIndicator] setDoubleValue:[[trawl_info objectForKey:@"completeCount"] doubleValue]];
+		[[self trawlProgressIndicator] displayIfNeeded];
 	}
-	else {
-		[[self trawlProgressIndicator] setIndeterminate:YES];
+	else
+	{
+		if (![[self trawlProgressIndicator] isIndeterminate])
+		{
+			[[self trawlProgressIndicator] setIndeterminate:YES];
+		}
 	}
 	
 	[[self trawlProgressImageCount] setStringValue:[NSString stringWithFormat:@"%ld / %ld", [[trawl_info objectForKey:@"completeCount"] integerValue], [[trawl_info objectForKey:@"fileCount"] integerValue]]];
