@@ -117,7 +117,7 @@
 	NSAssert([self startURL] != nil, @"%@ needs a starting URL.", [self class]);
 	
 	NSError* enumeration_error = NULL;
-	NSArray* children = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[self startURL] includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLIsDirectoryKey, nil] options:NSDirectoryEnumerationSkipsHiddenFiles error:&enumeration_error];
+	NSArray* children = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[self startURL] includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLIsDirectoryKey, nil] options:(NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants) error:&enumeration_error];
 	
 	if (!children)
 	{

@@ -14,7 +14,9 @@
 			<key>CFBundleTypeIconFile</key>
 			<string></string>
 			<key>CFBundleTypeName</key>
-			<string>DocumentType</string>
+			<string>SimilarImagesSearch</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>????</string>

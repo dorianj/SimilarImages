@@ -84,7 +84,6 @@
 		if ([self rootURL] != nil)
 			[self performSelectorOnMainThread:@selector(trawlRootURL) withObject:nil waitUntilDone:NO];
 	}
-		
 }
 
 
@@ -106,7 +105,6 @@
 
 - (void)updateTrawlProgressSheet:(NSDictionary*)trawl_info
 {
-//	NSLog(@"%@", trawl_info);
 	if ([[trawl_info objectForKey:@"searchComplete"] boolValue])
 	{
 		if ([[self trawlProgressIndicator] isIndeterminate])
@@ -174,15 +172,32 @@
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
 {
-	NSException *exception = [NSException exceptionWithName:@"UnimplementedMethod" reason:[NSString stringWithFormat:@"%@ is unimplemented", NSStringFromSelector(_cmd)] userInfo:nil];
-	@throw exception;
-	return nil;
+	if (![typeName isEqualToString:@"SimilarImagesSearch"])
+	{
+		NSLog(@"%s doesn't support data of type %@", __func__, typeName);
+		return nil;
+	}
+	
+	NSMutableDictionary* searchInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+											   [self images], @"images",
+											   [self rootURL], @"rootURL",
+											   nil];
+
+	//return [NSPropertyListSerialization dataWithPropertyList:archivedSearchInfo format:NSPropertyListBinaryFormat_v1_0 options:NSPropertyListImmutable error:NULL];
+	return [NSKeyedArchiver archivedDataWithRootObject:searchInfo];
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-	NSException *exception = [NSException exceptionWithName:@"UnimplementedMethod" reason:[NSString stringWithFormat:@"%@ is unimplemented", NSStringFromSelector(_cmd)] userInfo:nil];
-	@throw exception;
+	if (![typeName isEqualToString:@"SimilarImagesSearch"])
+	{
+		NSLog(@"%s doesn't support data of type %@", __func__, typeName);
+		return NO;
+	}
+	
+	NSDictionary* searchInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+	
+	[self setRootURL:[searchInfo objectForKey:@"rootURL"]];	
 	return YES;
 }
 
