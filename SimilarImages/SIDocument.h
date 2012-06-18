@@ -32,4 +32,6 @@
 // Sent when a user drops an image onto the needle image picker.
 - (IBAction)userDidDropImage:(id)sender;
 
+
+- (IBAction)runRootDirChooserSheet:(id)sender;
 @end

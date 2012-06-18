@@ -57,22 +57,37 @@
 	[[self resultsImageBrowserView] setCanControlQuickLookPanel:YES];
 	[[self resultsImageBrowserView] setCellsStyleMask:(IKCellsStyleNone | IKCellsStyleShadowed | IKCellsStyleTitled | IKCellsStyleSubtitled)];
 	
-	
 	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
-		NSOpenPanel* open_panel = [NSOpenPanel openPanel];
-		[open_panel setCanChooseDirectories:YES];
-		[open_panel setCanChooseFiles:NO];
-		
-		[open_panel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result) {
-			if (result != NSOKButton)
-			{
+		[self runRootDirChooserSheet:nil];
+	}];
+}
+
+- (IBAction)runRootDirChooserSheet:(id)sender
+{	
+	NSOpenPanel* open_panel = [NSOpenPanel openPanel];
+	[open_panel setCanChooseDirectories:YES];
+	[open_panel setCanChooseFiles:NO];
+	
+	if ([sender respondsToSelector:@selector(clickedPathComponentCell)])
+	{
+		[open_panel setDirectoryURL:[[sender clickedPathComponentCell] URL]];;
+	}
+	
+	
+	[open_panel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result) {
+		if (result != NSOKButton)
+		{
+			if ([self rootURL] == nil)
+			{	
+				// Didnt' have a root URL previously; showing the window now would leave it unusable.
 				[self close];
-				return;
 			}
 			
-			[self setRootURL:[open_panel URL]];
-		}];
-	}];
+			return;
+		}
+		
+		[self setRootURL:[open_panel URL]];
+	}];	
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -132,24 +147,6 @@
 {
 	[sheet close];
 }
-
-
-
-#pragma mark -
-#pragma mark Testing routines (static library)
-
-- (void)trawlTestLibrary
-{
-	NSString* path = @"~/ShortTerm/test_image_library";
-	//path = @"/Volumes/AR";
-	[self setRootURL:[NSURL fileURLWithPath:[path stringByExpandingTildeInPath]]];
-}
-
-- (void)searchTestLibrary
-{
-	[self setMatchingImages:[self findImagesVisuallySimilarToImage:[NSURL fileURLWithPath:[@"~/ShortTerm/test_image_library/LIVEJPEG/carnivaldolls.bmp" stringByExpandingTildeInPath]]]];
-}
-
 
 #pragma mark -
 #pragma mark NSDocument

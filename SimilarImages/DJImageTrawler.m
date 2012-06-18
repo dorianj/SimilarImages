@@ -55,7 +55,7 @@
 	// Wait for all operations to finish.
 	for (;;)
 	{
-		usleep(50000);
+		usleep(150000);
 		BOOL finished_searching = [[[self searchingQueue] operations] count] == 0;
 		
 		if (finished_searching)
