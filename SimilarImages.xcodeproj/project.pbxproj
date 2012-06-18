@@ -29,6 +29,7 @@
 		985D6D56158EA6EE000B56AD /* DJImageTrawler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJImageTrawler.m; sourceTree = "<group>"; };
 		985D6D58158EA80C000B56AD /* SIImageBrowserItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIImageBrowserItem.h; sourceTree = "<group>"; };
 		985D6D59158EA80C000B56AD /* SIImageBrowserItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIImageBrowserItem.m; sourceTree = "<group>"; };
+		985D6D5B158FDE5B000B56AD /* SimilarImages.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = SimilarImages.entitlements; sourceTree = "<group>"; };
 		987B6F84158E9E50008463AD /* SimilarImages.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimilarImages.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		987B6F88158E9E50008463AD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		987B6F8B158E9E50008463AD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -102,6 +103,7 @@
 		987B6F8E158E9E50008463AD /* SimilarImages */ = {
 			isa = PBXGroup;
 			children = (
+				985D6D5B158FDE5B000B56AD /* SimilarImages.entitlements */,
 				987B6FAA158E9E8C008463AD /* Controllers */,
 				987B6FA9158E9E87008463AD /* Models */,
 				987B6FA8158E9E71008463AD /* Views */,
@@ -327,10 +329,13 @@
 		987B6FA6158E9E51008463AD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SimilarImages/SimilarImages.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Dorian Johnson";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimilarImages/SimilarImages-Prefix.pch";
 				INFOPLIST_FILE = "SimilarImages/SimilarImages-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -338,10 +343,13 @@
 		987B6FA7158E9E51008463AD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SimilarImages/SimilarImages.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Dorian Johnson";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimilarImages/SimilarImages-Prefix.pch";
 				INFOPLIST_FILE = "SimilarImages/SimilarImages-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
