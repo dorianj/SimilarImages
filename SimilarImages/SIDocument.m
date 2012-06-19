@@ -9,6 +9,8 @@
 
 #define HAMMING_DISTANCE(A,B)	({ unsigned long long __BD = (A) ^ (B); __builtin_popcountll(__BD); })
 
+#define TRACE_FUNC() NSLog(@"%s", __func__)
+
 @interface SIDocument ()
 
 @property (readwrite, retain) NSArray* observedKeys;
@@ -94,7 +96,13 @@
 	else if ([keyPath isEqualToString:@"rootURL"])
 	{
 		if ([self rootURL] != nil)
+		{
+			NSString* windowTitle = [[self rootURL] lastPathComponent];
+			[self setDisplayName:windowTitle];
+			[[self windowForSheet] setTitle:windowTitle];
+			[[self rootURL] startAccessingSecurityScopedResource];
 			[self performSelectorOnMainThread:@selector(trawlRootURL) withObject:nil waitUntilDone:NO];
+		}
 	}
 }
 
@@ -171,7 +179,7 @@
 		NSLog(@"%s doesn't support data of type %@", __func__, typeName);
 		return nil;
 	}
-	
+	TRACE_FUNC();
 	// Pack up the root URL in a secure bookmark.
 	NSError* error;
 	NSData* rootURLData = [[self rootURL] bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope includingResourceValuesForKeys:nil relativeToURL:nil error:&error];
@@ -198,7 +206,7 @@
 		NSLog(@"%s doesn't support data of type %@", __func__, typeName);
 		return NO;
 	}
-
+TRACE_FUNC();
 	NSDictionary* searchInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 	
 	NSError* error;

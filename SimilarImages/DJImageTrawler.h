@@ -3,7 +3,7 @@
  */
 
 #import <Foundation/Foundation.h>
-
+@class DJPersistentCache;
 @interface DJImageTrawler : NSObject {
 
 @private
@@ -12,7 +12,8 @@
 }
 
 @property (readonly) NSOperationQueue* processingQueue, * searchingQueue;
-@property (readonly) NSMutableArray* images; 
+@property (readonly) NSMutableArray* images;
+@property (readonly) DJPersistentCache* hashCache;
 
 - (id)initWithURL:(NSURL*)root_directory;
 - (void)trawlImagesWithProgressBlock:(void(^)(NSDictionary*))block;

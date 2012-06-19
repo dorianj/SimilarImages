@@ -21,6 +21,8 @@
 		987B6FAD158EA4AC008463AD /* SIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 987B6FAC158EA4AC008463AD /* SIImageView.m */; };
 		987B6FAF158EA53D008463AD /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 987B6FAE158EA53D008463AD /* Quartz.framework */; };
 		987B6FB4158EA611008463AD /* browse_button_template.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 987B6FB3158EA611008463AD /* browse_button_template.pdf */; };
+		98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464015911DC4007D2FF4 /* DJPersistentCache.m */; };
+		98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464515911E48007D2FF4 /* SIAdditions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +52,10 @@
 		987B6FAC158EA4AC008463AD /* SIImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIImageView.m; sourceTree = "<group>"; };
 		987B6FAE158EA53D008463AD /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		987B6FB3158EA611008463AD /* browse_button_template.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = browse_button_template.pdf; sourceTree = "<group>"; };
+		98FD463F15911DC4007D2FF4 /* DJPersistentCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJPersistentCache.h; sourceTree = "<group>"; };
+		98FD464015911DC4007D2FF4 /* DJPersistentCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPersistentCache.m; sourceTree = "<group>"; };
+		98FD464415911E48007D2FF4 /* SIAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIAdditions.h; sourceTree = "<group>"; };
+		98FD464515911E48007D2FF4 /* SIAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIAdditions.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +115,7 @@
 				987B6FAA158E9E8C008463AD /* Controllers */,
 				987B6FA9158E9E87008463AD /* Models */,
 				987B6FA8158E9E71008463AD /* Views */,
+				98FD464315911E2B007D2FF4 /* Additions */,
 				987B6F8F158E9E50008463AD /* Supporting Files */,
 			);
 			path = SimilarImages;
@@ -146,6 +153,8 @@
 				985D6D52158EA6D1000B56AD /* DJImageHash.m */,
 				985D6D58158EA80C000B56AD /* SIImageBrowserItem.h */,
 				985D6D59158EA80C000B56AD /* SIImageBrowserItem.m */,
+				98FD463F15911DC4007D2FF4 /* DJPersistentCache.h */,
+				98FD464015911DC4007D2FF4 /* DJPersistentCache.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -167,6 +176,15 @@
 				987B6F97158E9E50008463AD /* Credits.rtf */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		98FD464315911E2B007D2FF4 /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				98FD464415911E48007D2FF4 /* SIAdditions.h */,
+				98FD464515911E48007D2FF4 /* SIAdditions.m */,
+			);
+			name = Additions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -242,6 +260,8 @@
 				985D6D53158EA6D1000B56AD /* DJImageHash.m in Sources */,
 				985D6D57158EA6EE000B56AD /* DJImageTrawler.m in Sources */,
 				985D6D5A158EA80C000B56AD /* SIImageBrowserItem.m in Sources */,
+				98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */,
+				98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

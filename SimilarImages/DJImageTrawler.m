@@ -3,11 +3,17 @@
 
 #import "DJImageTrawler.h"
 #import "DJImageHash.h"
+#import "DJPersistentCache.h"
+
+#import "SIAdditions.h"
 
 @interface DJImageTrawler ()
 
 @property (readwrite) NSOperationQueue* processingQueue, * searchingQueue;
 @property (readwrite) NSMutableArray* images;
+
+@property (readwrite) DJPersistentCache* hashCache;
+
 @end
 
 #pragma mark -
@@ -20,6 +26,7 @@
 @interface DJImageProcessingOperation : NSOperation
 	@property DJImageTrawler* owner; 
 	@property NSURL* imageURL;
+	@property NSDictionary* imageFileProperties;
 @end
 
 
@@ -27,13 +34,23 @@
 
 @implementation DJImageTrawler
 
-@synthesize searchingQueue, processingQueue, images;
+@synthesize searchingQueue, processingQueue, hashCache, images;
 
 - (id)initWithURL:(NSURL*)root_directory
 {
 	if (!(self = [super init]))
 		return nil;
 	
+	// Create a persistent cache for storing image hashes
+	NSURL* cacheURL = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
+
+	if (cacheURL != nil)
+	{
+		NSURL* hashCacheURL = [cacheURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@-hashCache.dat", [self class]]];
+		NSLog(@"%@", hashCacheURL);
+		[self setHashCache:[[DJPersistentCache alloc] initWithURL:hashCacheURL]];
+	}
+		
 	// Create the operation queues for this instance.
 	[self setProcessingQueue:[[NSOperationQueue alloc] init]];
 	[self setSearchingQueue:[[NSOperationQueue alloc] init]];
@@ -76,6 +93,8 @@
 	[[self processingQueue] waitUntilAllOperationsAreFinished];
 	
 	NSLog(@"Trawl took %f seconds.", [[NSDate date] timeIntervalSinceDate:start]);
+	
+	[[self hashCache] performSelectorInBackground:@selector(writeToPersistentStore) withObject:nil];
 }
 
 - (void)addUnprocessedImage
@@ -94,17 +113,41 @@
 
 @implementation DJImageProcessingOperation
 
-@synthesize imageURL, owner;
+@synthesize imageURL, imageFileProperties, owner;
 
 - (void)main
 {
 	NSAssert([self imageURL] != nil, @"%@ needs an image to work with.", [self class]);
-	DJImageHash* imageHash = [[DJImageHash alloc] initWithImageURL:[self imageURL]];
+	
+	NSMutableDictionary* newImageItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:[self imageURL], @"url", nil];
+	
+	
+	NSString* cacheKey = [[NSString stringWithFormat:@"%@%@%@-%d-1", [[self imageURL] path], [[self imageFileProperties] objectForKey:NSURLContentModificationDateKey], [[self imageFileProperties] objectForKey:NSURLFileSizeKey], [DJImageHash hashVersion]] sha1Digest];
+	
+	NSNumber* hash = [[[self owner] hashCache] objectForKey:cacheKey];
+	
+	if (!hash)
+	{
+		NSLog(@"dont have cached item for %@", cacheKey);
+		DJImageHash* imageHasher = [[DJImageHash alloc] initWithImageURL:[self imageURL]];
+		hash = [NSNumber numberWithUnsignedLongLong:[imageHasher imageHash]];
+		
+		if ([hash unsignedLongLongValue] == 0)
+		{
+			NSLog(@"unable to hash %@", [self imageURL]);
+			return;
+		}
+		
+		[[[self owner] hashCache] setObject:hash forKey:cacheKey];
+	}
+	
+	[newImageItem setObject:hash forKey:@"hash"];
 	
 	[[self owner] addProcessedImage];
+	
 	@synchronized ([[self owner] images])
 	{
-		[[[self owner] images] addObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedLongLong:[imageHash imageHash]], @"hash", [self imageURL], @"url", nil]];
+		[[[self owner] images] addObject:newImageItem];
 	}
 }
 
@@ -131,7 +174,7 @@
 	NSAssert([self startURL] != nil, @"%@ needs a starting URL.", [self class]);
 	
 	NSError* enumeration_error = NULL;
-	NSArray* children = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[self startURL] includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLIsDirectoryKey, nil] options:(NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants) error:&enumeration_error];
+	NSArray* children = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[self startURL] includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLIsDirectoryKey, NSURLContentModificationDateKey, NSURLFileSizeKey, nil] options:(NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants) error:&enumeration_error];
 	
 	if (!children)
 	{
@@ -161,11 +204,12 @@
 				//NSLog(@"Skipping non-image %@", child);
 				continue;
 			}
-
+			
 			// Queue a processing operation for this image.
 			DJImageProcessingOperation* image_processor = [[DJImageProcessingOperation alloc] init];
 			[image_processor setOwner:[self owner]];
 			[image_processor setImageURL:child];
+			[image_processor setImageFileProperties:[child resourceValuesForKeys:[NSArray arrayWithObjects:NSURLContentModificationDateKey, NSURLFileSizeKey, nil] error:NULL]];
 			[[[self owner] processingQueue] addOperation:image_processor];
 			[[self owner] addUnprocessedImage];
 		}
