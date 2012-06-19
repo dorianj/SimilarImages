@@ -46,6 +46,7 @@
 - (void)trawlImagesWithProgressBlock:(void(^)(NSDictionary*))progress_block
 {
 	// Add the first operation, a search on the root directory.
+	NSDate* start = [NSDate date];
 	DJDirectorySearchOperation* root_search = [[DJDirectorySearchOperation alloc] init];
 	[root_search setOwner:self];
 	[root_search setStartURL:_root];
@@ -72,6 +73,8 @@
 	
 	[[self searchingQueue] waitUntilAllOperationsAreFinished];
 	[[self processingQueue] waitUntilAllOperationsAreFinished];
+	
+	NSLog(@"Trawl took %f seconds.", [[NSDate date] timeIntervalSinceDate:start]);
 }
 
 - (void)addUnprocessedImage

@@ -32,6 +32,10 @@
 // Sent when a user drops an image onto the needle image picker.
 - (IBAction)userDidDropImage:(id)sender;
 
-
+// Runs the search dir chooser and re-scans
 - (IBAction)runRootDirChooserSheet:(id)sender;
+
+// Actions on search results
+- (IBAction)revealSearchResultInFinder:(id)sender;
+- (IBAction)openSearchResultWithDefaultApp:(id)sender;
 @end

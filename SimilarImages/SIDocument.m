@@ -55,7 +55,7 @@
 {
 	// Configure the results image browser
 	[[self resultsImageBrowserView] setCanControlQuickLookPanel:YES];
-	[[self resultsImageBrowserView] setCellsStyleMask:(IKCellsStyleNone | IKCellsStyleShadowed | IKCellsStyleTitled | IKCellsStyleSubtitled)];
+	[[self resultsImageBrowserView] setCellsStyleMask:(IKCellsStyleNone | IKCellsStyleShadowed | IKCellsStyleTitled /*| IKCellsStyleSubtitled*/)];
 	
 	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
 		[self runRootDirChooserSheet:nil];
@@ -69,10 +69,7 @@
 	[open_panel setCanChooseFiles:NO];
 	
 	if ([sender respondsToSelector:@selector(clickedPathComponentCell)])
-	{
 		[open_panel setDirectoryURL:[[sender clickedPathComponentCell] URL]];;
-	}
-	
 	
 	[open_panel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result) {
 		if (result != NSOKButton)
@@ -261,6 +258,38 @@
 {
 	[self setMatchingImages:[self findImagesVisuallySimilarToImage:[[self needleImagePicker] imageURL]]];	
 }
+
+#pragma mark -
+#pragma mark Working with the search results
+
+- (NSArray*)selectedResultImageURLs
+{
+	NSIndexSet* selectedIndices = [[self resultsImageBrowserView] selectionIndexes];
+	
+	if ([selectedIndices count] == 0)
+		return nil;
+	
+	NSMutableArray* selectedURLs = [NSMutableArray array];
+	
+	[selectedIndices enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+		[selectedURLs addObject:[[[[self matchingImages] objectAtIndex:idx] objectForKey:@"bitem"] imageURL]];
+	}];
+
+	return selectedURLs;
+}
+
+- (IBAction)revealSearchResultInFinder:(id)sender
+{
+	if ([self selectedResultImageURLs])
+		[[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:[self selectedResultImageURLs]];
+}
+
+- (IBAction)openSearchResultWithDefaultApp:(id)sender
+{
+	//[[NSWorkspace sharedWorkspace] openURL:[[self selectedResultImageURLs] lastObject]];
+	[[NSWorkspace sharedWorkspace] openURLs:[self selectedResultImageURLs] withAppBundleIdentifier:@"com.apple.preview" options:NSWorkspaceLaunchDefault additionalEventParamDescriptor:nil launchIdentifiers:NULL];
+}
+
 
 #pragma mark - 
 #pragma mark Working with the image browser (IKImageBrowserViewDataSource)
