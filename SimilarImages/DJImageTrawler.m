@@ -38,6 +38,7 @@
 	[self setProcessingQueue:[[NSOperationQueue alloc] init]];
 	[self setSearchingQueue:[[NSOperationQueue alloc] init]];
 	[[self processingQueue] setSuspended:YES];
+	[[self searchingQueue] setMaxConcurrentOperationCount:4];
 	[self setImages:[NSMutableArray array]];
 	_root = root_directory;
 	return self;
@@ -115,6 +116,16 @@
 
 @synthesize startURL, owner;
 
++ (NSArray*)imageFileExtensions
+{
+	static NSArray* _extensions = nil;
+	
+	if (_extensions == nil)
+		_extensions = [NSArray arrayWithObjects:@"jpg", @"jpeg", @"bmp", @"git", @"png", @"tif", @"tiff", @"jp2", nil];
+	
+	return _extensions;
+}
+
 - (void)main
 {
 	NSAssert([self startURL] != nil, @"%@ needs a starting URL.", [self class]);
@@ -145,7 +156,7 @@
 		else
 		{
 			// If this file is not an image, skip it.
-			if (![[NSArray arrayWithObjects:@"jpg", @"jpeg", @"bmp", @"git", @"png", @"tif", @"tiff", @"jp2", nil] containsObject:[[child pathExtension] lowercaseString]])
+			if (![[DJDirectorySearchOperation imageFileExtensions] containsObject:[[child pathExtension] lowercaseString]])
 			{
 				//NSLog(@"Skipping non-image %@", child);
 				continue;
