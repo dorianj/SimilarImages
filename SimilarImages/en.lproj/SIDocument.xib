@@ -49,7 +49,7 @@
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{133, 235}, {600, 812}}</string>
-				<int key="NSWTFlags">1886912512</int>
+				<int key="NSWTFlags">813170688</int>
 				<string key="NSWindowTitle">Similar Images</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<string key="NSViewClass">View</string>
@@ -388,9 +388,7 @@
 								<int key="NSCellFlags2">131072</int>
 								<object class="NSURL" key="NSContents">
 									<nil key="NS.base"/>
-									<object class="NSMutableString" key="NS.relative">
-										<characters key="NS.bytes">file://localhost/Users/</characters>
-									</object>
+									<string key="NS.relative">file://localhost/Users/</string>
 								</object>
 								<object class="NSFont" key="NSSupport" id="26">
 									<string key="NSName">LucidaGrande</string>
@@ -491,7 +489,7 @@
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="398306012">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSTextField" id="84857015">
@@ -543,7 +541,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{18, 16}, {453, 20}}</string>
 							<reference key="NSSuperview" ref="398306012"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSHuggingPriority">{250, 250}</string>
 							<int key="NSpiFlags">16399</int>
@@ -551,7 +548,6 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{489, 91}</string>
-					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="84857015"/>
 					<string key="NSReuseIdentifierKey">_NS:21</string>
 				</object>
@@ -1516,6 +1512,7 @@
 				<string key="100485.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="5.IBWindowTemplateEditedContentRect">{{133, 170}, {507, 413}}</string>
+				<boolean value="YES" key="5.NSWindowTemplate.visibleAtLaunch"/>
 				<array class="NSMutableArray" key="6.IBNSViewMetadataConstraints">
 					<reference ref="748050243"/>
 					<reference ref="883958078"/>

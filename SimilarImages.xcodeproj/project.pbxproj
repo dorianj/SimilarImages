@@ -68,7 +68,6 @@
 		987B6F79158E9E50008463AD = {
 			isa = PBXGroup;
 			children = (
-				987B6FAE158EA53D008463AD /* Quartz.framework */,
 				987B6F8E158E9E50008463AD /* SimilarImages */,
 				987B6F87158E9E50008463AD /* Frameworks */,
 				987B6F85158E9E50008463AD /* Products */,
@@ -86,6 +85,7 @@
 		987B6F87158E9E50008463AD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				987B6FAE158EA53D008463AD /* Quartz.framework */,
 				987B6F88158E9E50008463AD /* Cocoa.framework */,
 				987B6F8A158E9E50008463AD /* Other Frameworks */,
 			);

@@ -172,9 +172,19 @@
 		return nil;
 	}
 	
+	// Pack up the root URL in a secure bookmark.
+	NSError* error;
+	NSData* rootURLData = [[self rootURL] bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope includingResourceValuesForKeys:nil relativeToURL:nil error:&error];
+	
+	if (rootURLData == nil)
+	{
+		NSLog(@"%s: Error saving: couldn't create data of rootURL. %@", __func__, error);
+		return nil;
+	}
+
 	NSMutableDictionary* searchInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											   [self images], @"images",
-											   [self rootURL], @"rootURL",
+											//   [self images], @"images",
+											   rootURLData, @"rootURL",
 											   nil];
 
 	//return [NSPropertyListSerialization dataWithPropertyList:archivedSearchInfo format:NSPropertyListBinaryFormat_v1_0 options:NSPropertyListImmutable error:NULL];
@@ -188,10 +198,20 @@
 		NSLog(@"%s doesn't support data of type %@", __func__, typeName);
 		return NO;
 	}
-	
+
 	NSDictionary* searchInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 	
-	[self setRootURL:[searchInfo objectForKey:@"rootURL"]];	
+	NSError* error;
+	BOOL bookmarkIsStale;
+	NSURL* newRootURL = [NSURL URLByResolvingBookmarkData:[searchInfo objectForKey:@"rootURL"] options:NSURLBookmarkResolutionWithSecurityScope relativeToURL:nil bookmarkDataIsStale:&bookmarkIsStale error:&error];
+	
+	if (newRootURL == nil)
+	{
+		NSLog(@"%s: Error loading: couldn't create URL from data. %@", __func__, error);
+		return NO;
+	}
+	
+	[self setRootURL:newRootURL];
 	return YES;
 }
 
