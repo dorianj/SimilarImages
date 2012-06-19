@@ -37,7 +37,6 @@ CGColorSpaceRef _gray_color_space;
 	// Load the image.
 	NSDictionary* image_source_options = [NSDictionary dictionaryWithObjectsAndKeys:
 										[NSNumber numberWithUnsignedInteger:DOWNSAMPLE_SIZE*2], kCGImageSourceThumbnailMaxPixelSize, /* double pixel resolution becuase thumbnail creator respects aspect ratio */
-										(id)kCFBooleanTrue, kCGImageSourceCreateThumbnailFromImageIfAbsent,
 										nil];
 	
 	CGImageSourceRef image_source = CGImageSourceCreateWithURL((__bridge CFURLRef)[self imageURL], (__bridge CFDictionaryRef)image_source_options);
@@ -49,6 +48,10 @@ CGColorSpaceRef _gray_color_space;
 	}
 	
 	CGImageRef thumbnail_image = CGImageSourceCreateThumbnailAtIndex(image_source, 0, (__bridge CFDictionaryRef)image_source_options);
+	
+	if (thumbnail_image == NULL)
+		thumbnail_image = CGImageSourceCreateImageAtIndex(image_source, 0, (__bridge CFDictionaryRef)image_source_options);
+	
 	CFRelease(image_source);
 	
 	if (thumbnail_image == NULL)
@@ -60,7 +63,7 @@ CGColorSpaceRef _gray_color_space;
 	// Create a gray 8x8 representation.
 	uint8 data[DOWNSAMPLE_SIZE * DOWNSAMPLE_SIZE];
 	CGContextRef gray_bitmap_context = CGBitmapContextCreate(data, DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE, 8, DOWNSAMPLE_SIZE, _gray_color_space, kCGImageAlphaNone);
-	CGContextSetInterpolationQuality(gray_bitmap_context, kCGInterpolationNone);
+	CGContextSetInterpolationQuality(gray_bitmap_context, kCGInterpolationLow);
 	CGContextDrawImage(gray_bitmap_context, NSMakeRect(0, 0, 8, 8), thumbnail_image);
 	CGImageRelease(thumbnail_image);
 	
@@ -79,7 +82,6 @@ CGColorSpaceRef _gray_color_space;
 		if ((NSInteger)(*(p++)) > mean_pixel)
 			hash_value |= (1UL << i);
 
-	//NSLog(@"Hash is %llu", hash_value);
 	_hash = hash_value;
 	
 	
@@ -90,7 +92,6 @@ CGColorSpaceRef _gray_color_space;
 	[[output_image TIFFRepresentation] writeToFile:[@"~/ShortTerm/out.tif" stringByExpandingTildeInPath] atomically:NO];*/
 	
 	CGContextRelease(gray_bitmap_context);
-	
 	return YES;
 }
 
