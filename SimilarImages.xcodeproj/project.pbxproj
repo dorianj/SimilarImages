@@ -23,6 +23,7 @@
 		987B6FB4158EA611008463AD /* browse_button_template.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 987B6FB3158EA611008463AD /* browse_button_template.pdf */; };
 		98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464015911DC4007D2FF4 /* DJPersistentCache.m */; };
 		98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464515911E48007D2FF4 /* SIAdditions.m */; };
+		98FD465215914A35007D2FF4 /* DJPersistentCacheTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,8 @@
 		98FD464015911DC4007D2FF4 /* DJPersistentCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPersistentCache.m; sourceTree = "<group>"; };
 		98FD464415911E48007D2FF4 /* SIAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIAdditions.h; sourceTree = "<group>"; };
 		98FD464515911E48007D2FF4 /* SIAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIAdditions.m; sourceTree = "<group>"; };
+		98FD465015914A35007D2FF4 /* DJPersistentCacheTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJPersistentCacheTest.h; sourceTree = "<group>"; };
+		98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPersistentCacheTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +132,8 @@
 				987B6F91158E9E50008463AD /* InfoPlist.strings */,
 				987B6F94158E9E50008463AD /* main.m */,
 				987B6F96158E9E50008463AD /* SimilarImages-Prefix.pch */,
+				98FD465015914A35007D2FF4 /* DJPersistentCacheTest.h */,
+				98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -262,6 +267,7 @@
 				985D6D5A158EA80C000B56AD /* SIImageBrowserItem.m in Sources */,
 				98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */,
 				98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */,
+				98FD465215914A35007D2FF4 /* DJPersistentCacheTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
