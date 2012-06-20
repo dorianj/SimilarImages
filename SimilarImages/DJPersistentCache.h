@@ -8,9 +8,11 @@
 @property (readwrite, assign) NSInteger maxEntryCount;
 @property (readwrite, retain) NSURL* URL;
 
+
 - (id)initWithURL:(NSURL*)cacheURL;
 
 
+- (NSInteger)count;
 - (void)writeToPersistentStore;
 - (BOOL)writeToURL:(NSURL*)cacheURL error:(NSError**)error;
 

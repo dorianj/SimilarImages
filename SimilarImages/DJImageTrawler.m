@@ -47,9 +47,8 @@
 	if (cacheURL != nil)
 	{
 		NSURL* hashCacheURL = [cacheURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@-hashCache.dat", [self class]]];
-		NSLog(@"%@", hashCacheURL);
 		[self setHashCache:[[DJPersistentCache alloc] initWithURL:hashCacheURL]];
-		[[self hashCache] setMaxEntryCount:100];
+		[[self hashCache] setMaxEntryCount:100000];
 	}
 		
 	// Create the operation queues for this instance.

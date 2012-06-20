@@ -8,7 +8,7 @@
 
 NSString* DJHexadecimalStringFromBytes(const unsigned char* data, NSUInteger dataLength)
 {
-	static char hexDigits[] = "0123456789abcdef";
+	static unsigned char hexDigits[] = "0123456789abcdef";
 	unsigned char* output = malloc(dataLength*2+1);
 	
 	for (NSUInteger i = 0; i < dataLength; i++)

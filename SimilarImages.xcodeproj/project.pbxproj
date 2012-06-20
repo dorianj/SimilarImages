@@ -23,7 +23,12 @@
 		987B6FB4158EA611008463AD /* browse_button_template.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 987B6FB3158EA611008463AD /* browse_button_template.pdf */; };
 		98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464015911DC4007D2FF4 /* DJPersistentCache.m */; };
 		98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464515911E48007D2FF4 /* SIAdditions.m */; };
-		98FD465215914A35007D2FF4 /* DJPersistentCacheTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */; };
+		98FD465A1591517A007D2FF4 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98FD46591591517A007D2FF4 /* SenTestingKit.framework */; };
+		98FD465B1591517A007D2FF4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 987B6F88158E9E50008463AD /* Cocoa.framework */; };
+		98FD46611591517A007D2FF4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 98FD465F1591517A007D2FF4 /* InfoPlist.strings */; };
+		98FD46641591517A007D2FF4 /* SITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD46631591517A007D2FF4 /* SITests.m */; };
+		98FD4669159151A9007D2FF4 /* DJPersistentCacheTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */; };
+		98FD466A1591521E007D2FF4 /* DJPersistentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464015911DC4007D2FF4 /* DJPersistentCache.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,8 +62,15 @@
 		98FD464015911DC4007D2FF4 /* DJPersistentCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPersistentCache.m; sourceTree = "<group>"; };
 		98FD464415911E48007D2FF4 /* SIAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIAdditions.h; sourceTree = "<group>"; };
 		98FD464515911E48007D2FF4 /* SIAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIAdditions.m; sourceTree = "<group>"; };
-		98FD465015914A35007D2FF4 /* DJPersistentCacheTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJPersistentCacheTest.h; sourceTree = "<group>"; };
-		98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPersistentCacheTest.m; sourceTree = "<group>"; };
+		98FD465015914A35007D2FF4 /* DJPersistentCacheTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DJPersistentCacheTest.h; path = ../SimilarImages/DJPersistentCacheTest.h; sourceTree = "<group>"; };
+		98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DJPersistentCacheTest.m; path = ../SimilarImages/DJPersistentCacheTest.m; sourceTree = "<group>"; };
+		98FD465815915179007D2FF4 /* SITests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SITests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		98FD46591591517A007D2FF4 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		98FD465E1591517A007D2FF4 /* SITests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SITests-Info.plist"; sourceTree = "<group>"; };
+		98FD46601591517A007D2FF4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		98FD46621591517A007D2FF4 /* SITests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SITests.h; sourceTree = "<group>"; };
+		98FD46631591517A007D2FF4 /* SITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SITests.m; sourceTree = "<group>"; };
+		98FD46651591517A007D2FF4 /* SITests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SITests-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +83,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		98FD465415915179007D2FF4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98FD465A1591517A007D2FF4 /* SenTestingKit.framework in Frameworks */,
+				98FD465B1591517A007D2FF4 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -78,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				987B6F8E158E9E50008463AD /* SimilarImages */,
+				98FD465C1591517A007D2FF4 /* SITests */,
 				987B6F87158E9E50008463AD /* Frameworks */,
 				987B6F85158E9E50008463AD /* Products */,
 			);
@@ -87,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				987B6F84158E9E50008463AD /* SimilarImages.app */,
+				98FD465815915179007D2FF4 /* SITests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -96,6 +119,7 @@
 			children = (
 				987B6FAE158EA53D008463AD /* Quartz.framework */,
 				987B6F88158E9E50008463AD /* Cocoa.framework */,
+				98FD46591591517A007D2FF4 /* SenTestingKit.framework */,
 				987B6F8A158E9E50008463AD /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -132,8 +156,6 @@
 				987B6F91158E9E50008463AD /* InfoPlist.strings */,
 				987B6F94158E9E50008463AD /* main.m */,
 				987B6F96158E9E50008463AD /* SimilarImages-Prefix.pch */,
-				98FD465015914A35007D2FF4 /* DJPersistentCacheTest.h */,
-				98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -192,6 +214,28 @@
 			name = Additions;
 			sourceTree = "<group>";
 		};
+		98FD465C1591517A007D2FF4 /* SITests */ = {
+			isa = PBXGroup;
+			children = (
+				98FD46621591517A007D2FF4 /* SITests.h */,
+				98FD46631591517A007D2FF4 /* SITests.m */,
+				98FD465015914A35007D2FF4 /* DJPersistentCacheTest.h */,
+				98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */,
+				98FD465D1591517A007D2FF4 /* Supporting Files */,
+			);
+			path = SITests;
+			sourceTree = "<group>";
+		};
+		98FD465D1591517A007D2FF4 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				98FD465E1591517A007D2FF4 /* SITests-Info.plist */,
+				98FD465F1591517A007D2FF4 /* InfoPlist.strings */,
+				98FD46651591517A007D2FF4 /* SITests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -211,6 +255,24 @@
 			productName = SimilarImages;
 			productReference = 987B6F84158E9E50008463AD /* SimilarImages.app */;
 			productType = "com.apple.product-type.application";
+		};
+		98FD465715915179007D2FF4 /* SITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 98FD46661591517A007D2FF4 /* Build configuration list for PBXNativeTarget "SITests" */;
+			buildPhases = (
+				98FD465315915179007D2FF4 /* Sources */,
+				98FD465415915179007D2FF4 /* Frameworks */,
+				98FD465515915179007D2FF4 /* Resources */,
+				98FD465615915179007D2FF4 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SITests;
+			productName = SITests;
+			productReference = 98FD465815915179007D2FF4 /* SITests.octest */;
+			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
@@ -234,6 +296,7 @@
 			projectRoot = "";
 			targets = (
 				987B6F83158E9E50008463AD /* SimilarImages */,
+				98FD465715915179007D2FF4 /* SITests */,
 			);
 		};
 /* End PBXProject section */
@@ -252,7 +315,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		98FD465515915179007D2FF4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98FD46611591517A007D2FF4 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		98FD465615915179007D2FF4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		987B6F80158E9E50008463AD /* Sources */ = {
@@ -267,7 +354,16 @@
 				985D6D5A158EA80C000B56AD /* SIImageBrowserItem.m in Sources */,
 				98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */,
 				98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */,
-				98FD465215914A35007D2FF4 /* DJPersistentCacheTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		98FD465315915179007D2FF4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98FD46641591517A007D2FF4 /* SITests.m in Sources */,
+				98FD4669159151A9007D2FF4 /* DJPersistentCacheTest.m in Sources */,
+				98FD466A1591521E007D2FF4 /* DJPersistentCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,6 +402,14 @@
 			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
+		98FD465F1591517A007D2FF4 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				98FD46601591517A007D2FF4 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -315,6 +419,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -328,6 +433,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -342,6 +448,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -349,6 +456,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -384,6 +492,30 @@
 			};
 			name = Release;
 		};
+		98FD46671591517A007D2FF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SITests/SITests-Prefix.pch";
+				INFOPLIST_FILE = "SITests/SITests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		98FD46681591517A007D2FF4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SITests/SITests-Prefix.pch";
+				INFOPLIST_FILE = "SITests/SITests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -404,6 +536,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		98FD46661591517A007D2FF4 /* Build configuration list for PBXNativeTarget "SITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				98FD46671591517A007D2FF4 /* Debug */,
+				98FD46681591517A007D2FF4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

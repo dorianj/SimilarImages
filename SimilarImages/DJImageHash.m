@@ -70,7 +70,7 @@ CGColorSpaceRef _gray_color_space;
 	// Calculate mean pixel value
 	uint8* p = data;
 	NSInteger mean_pixel = 0;
-	for (int i = 0; i < DOWNSAMPLE_SIZE*DOWNSAMPLE_SIZE; i++)
+	for (NSInteger i = 0; i < (NSInteger)(DOWNSAMPLE_SIZE*DOWNSAMPLE_SIZE); i++)
 		mean_pixel += *(p++);
 	
 	mean_pixel /= DOWNSAMPLE_SIZE*DOWNSAMPLE_SIZE;
@@ -78,7 +78,7 @@ CGColorSpaceRef _gray_color_space;
 	// Calculate image hash	
 	p = data;
 	uint64_t hash_value = 0;
-	for (int i = 0; i < DOWNSAMPLE_SIZE*DOWNSAMPLE_SIZE; i++)
+	for (NSInteger i = 0; i < (NSInteger)(DOWNSAMPLE_SIZE*DOWNSAMPLE_SIZE); i++)
 		if ((NSInteger)(*(p++)) > mean_pixel)
 			hash_value |= (1UL << i);
 

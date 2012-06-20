@@ -11,16 +11,25 @@
 
 #pragma mark -
 
+#define DJPersistentCacheLoadFactor 0.8
+
 @interface DJPersistentCache ()
 @property (readwrite, retain) NSMutableDictionary* cachedObjects;
+@property (readwrite, retain) NSLock* cacheLock;
 @end
 
 #pragma mark -
 
 @implementation DJPersistentCache
 
-@synthesize cachedObjects, maxEntryCount, URL;
+@synthesize cachedObjects, maxEntryCount, URL, cacheLock;
 
+- (id)init
+{
+	return [self initWithURL:nil];
+}
+
+// Designated initializer.
 - (id)initWithURL:(NSURL *)cacheURL
 {
 	if (!(self = [super init]))
@@ -40,6 +49,7 @@
 	if ([self cachedObjects] == nil)
 		[self setCachedObjects:[NSMutableDictionary dictionary]];
 		
+	[self setCacheLock:[[NSLock alloc] init]];
 	return self;
 }
 
@@ -63,36 +73,63 @@
 	return YES;
 }
 
+- (NSInteger)count
+{
+	return (NSInteger)[[self cachedObjects] count];
+}
 
 - (id)objectForKey:(id)key
 {
+	[[self cacheLock] lock];
 	DJPersistentCacheItem* item = [[self cachedObjects] objectForKey:key];
 	
 	if (!item)
+	{
+		[[self cacheLock] unlock];
 		return nil;
+	}
 		
 	[item setLastAccessed:[[NSDate date] timeIntervalSince1970]];
+	[[self cacheLock] unlock];
+	
 	return [item value];
 }
 
 - (void)setObject:(id)obj forKey:(id)key
 {
-	[self cleanCacheIfNeeded];
+	[[self cacheLock] lock];
+	
+	if ([self cacheCleanNeeded])
+		[self cleanCache];
 	
 	DJPersistentCacheItem* newItem = [[DJPersistentCacheItem alloc] init];
 	[newItem setValue:obj];
 	[newItem setLastAccessed:[[NSDate date] timeIntervalSince1970]];
 	[[self cachedObjects] setObject:newItem forKey:key];
+	
+	[[self cacheLock] unlock];
 }
 
-
-
-- (void)cleanCacheIfNeeded
+- (BOOL)cacheCleanNeeded
 {
-	if ( ([self maxEntryCount] == 0) || ([[self cachedObjects] count] < [self maxEntryCount]) )
-		return;
-		
-	NSLog(@"%s: cleaning cache", __func__);
+	return ([self maxEntryCount] > 0) && ((NSInteger)[[self cachedObjects] count] >= [self maxEntryCount]);
+}
+
+- (void)cleanCache
+{	
+	// Create a sorted representation of all objects.
+	NSMutableArray* items = [NSMutableArray arrayWithCapacity:[[self cachedObjects] count]];
+	
+	for (id key in [[self cachedObjects] keyEnumerator])
+		[items addObject:[NSArray arrayWithObjects:key, [NSNumber numberWithDouble:[[[self cachedObjects] objectForKey:key] lastAccessed]], nil]];
+	
+	[items sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		return [[obj1 objectAtIndex:1] compare:[obj2 objectAtIndex:1]];
+	}];
+	
+	// Remove the top 15 items.
+	for (NSInteger i = 0, l = MIN((NSInteger)[items count], (NSInteger)([self maxEntryCount] * (1.0 - DJPersistentCacheLoadFactor))); i < l; i++)
+		[[self cachedObjects] removeObjectForKey:[[items objectAtIndex:(NSUInteger)i] objectAtIndex:0]];	
 }
 
 

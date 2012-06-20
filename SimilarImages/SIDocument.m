@@ -264,7 +264,7 @@ TRACE_FUNC();
 			return;
 		
 		// Do a hamming distance between the needle and this image.
-		unsigned int dist = HAMMING_DISTANCE([[item objectForKey:@"hash"] unsignedIntegerValue], needle);
+		int dist = HAMMING_DISTANCE([[item objectForKey:@"hash"] unsignedIntegerValue], needle);
 		
 		if (dist > 5)
 			return;
