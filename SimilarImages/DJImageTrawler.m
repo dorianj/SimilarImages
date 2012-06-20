@@ -11,7 +11,6 @@
 
 @property (readwrite) NSOperationQueue* processingQueue, * searchingQueue;
 @property (readwrite) NSMutableArray* images;
-
 @property (readwrite) DJPersistentCache* hashCache;
 
 @end
@@ -27,6 +26,7 @@
 	@property DJImageTrawler* owner; 
 	@property NSURL* imageURL;
 	@property NSDictionary* imageFileProperties;
+	@property NSString* cacheKey;
 @end
 
 
@@ -49,6 +49,7 @@
 		NSURL* hashCacheURL = [cacheURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@-hashCache.dat", [self class]]];
 		NSLog(@"%@", hashCacheURL);
 		[self setHashCache:[[DJPersistentCache alloc] initWithURL:hashCacheURL]];
+		[[self hashCache] setMaxEntryCount:100];
 	}
 		
 	// Create the operation queues for this instance.
@@ -113,7 +114,7 @@
 
 @implementation DJImageProcessingOperation
 
-@synthesize imageURL, imageFileProperties, owner;
+@synthesize imageURL, imageFileProperties, cacheKey, owner;
 
 - (void)main
 {
@@ -122,24 +123,19 @@
 	NSMutableDictionary* newImageItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:[self imageURL], @"url", nil];
 	
 	
-	NSString* cacheKey = [[NSString stringWithFormat:@"%@%@%@-%d-1", [[self imageURL] path], [[self imageFileProperties] objectForKey:NSURLContentModificationDateKey], [[self imageFileProperties] objectForKey:NSURLFileSizeKey], [DJImageHash hashVersion]] sha1Digest];
 	
-	NSNumber* hash = [[[self owner] hashCache] objectForKey:cacheKey];
+	//NSLog(@"Hashing %@ (%@)", [self imageURL], cacheKey);
+	DJImageHash* imageHasher = [[DJImageHash alloc] initWithImageURL:[self imageURL]];
+	NSNumber* hash = [NSNumber numberWithUnsignedLongLong:[imageHasher imageHash]];
 	
-	if (!hash)
+	if ([hash unsignedLongLongValue] == 0)
 	{
-		NSLog(@"dont have cached item for %@", cacheKey);
-		DJImageHash* imageHasher = [[DJImageHash alloc] initWithImageURL:[self imageURL]];
-		hash = [NSNumber numberWithUnsignedLongLong:[imageHasher imageHash]];
-		
-		if ([hash unsignedLongLongValue] == 0)
-		{
-			NSLog(@"unable to hash %@", [self imageURL]);
-			return;
-		}
-		
-		[[[self owner] hashCache] setObject:hash forKey:cacheKey];
+		NSLog(@"unable to hash %@", [self imageURL]);
+		return;
 	}
+	
+	[[[self owner] hashCache] setObject:hash forKey:[self cacheKey]];
+
 	
 	[newImageItem setObject:hash forKey:@"hash"];
 	
@@ -205,13 +201,33 @@
 				continue;
 			}
 			
-			// Queue a processing operation for this image.
-			DJImageProcessingOperation* image_processor = [[DJImageProcessingOperation alloc] init];
-			[image_processor setOwner:[self owner]];
-			[image_processor setImageURL:child];
-			[image_processor setImageFileProperties:[child resourceValuesForKeys:[NSArray arrayWithObjects:NSURLContentModificationDateKey, NSURLFileSizeKey, nil] error:NULL]];
-			[[[self owner] processingQueue] addOperation:image_processor];
-			[[self owner] addUnprocessedImage];
+			// Check the cache before queueing this item.
+			NSDictionary* fileInfo = [child resourceValuesForKeys:[NSArray arrayWithObjects:NSURLContentModificationDateKey, NSURLFileSizeKey, nil] error:NULL];	
+			NSString* cacheKey = [[NSString stringWithFormat:@"%@-%f-%@-%d-1", [child path], [[fileInfo objectForKey:NSURLContentModificationDateKey] timeIntervalSince1970], [fileInfo objectForKey:NSURLFileSizeKey], [DJImageHash hashVersion]] sha1Digest];
+			NSNumber* hash = [[[self owner] hashCache] objectForKey:cacheKey];
+			
+			if (hash)
+			{
+				[[self owner] addUnprocessedImage];
+				
+				@synchronized([[self owner] images])
+				{
+					[[[self owner] images] addObject:[NSDictionary dictionaryWithObjectsAndKeys:hash, @"hash", child, @"url", nil]];
+				}
+				
+				[[self owner] addProcessedImage];	
+			}
+			else
+			{
+				// Queue a processing operation for this image.
+				DJImageProcessingOperation* image_processor = [[DJImageProcessingOperation alloc] init];
+				[image_processor setOwner:[self owner]];
+				[image_processor setImageURL:child];
+				[image_processor setCacheKey:cacheKey];
+				
+				[[[self owner] processingQueue] addOperation:image_processor];
+				[[self owner] addUnprocessedImage];	
+			}
 		}
 	}
 }
