@@ -21,6 +21,8 @@
 		987B6FAD158EA4AC008463AD /* SIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 987B6FAC158EA4AC008463AD /* SIImageView.m */; };
 		987B6FAF158EA53D008463AD /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 987B6FAE158EA53D008463AD /* Quartz.framework */; };
 		987B6FB4158EA611008463AD /* browse_button_template.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 987B6FB3158EA611008463AD /* browse_button_template.pdf */; };
+		9881963015939D11003198B8 /* SIDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9881962F15939D11003198B8 /* SIDefaults.plist */; };
+		9881963915939D79003198B8 /* SIAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9881963815939D79003198B8 /* SIAppDelegate.m */; };
 		98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464015911DC4007D2FF4 /* DJPersistentCache.m */; };
 		98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464515911E48007D2FF4 /* SIAdditions.m */; };
 		98FD465A1591517A007D2FF4 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98FD46591591517A007D2FF4 /* SenTestingKit.framework */; };
@@ -58,6 +60,9 @@
 		987B6FAC158EA4AC008463AD /* SIImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIImageView.m; sourceTree = "<group>"; };
 		987B6FAE158EA53D008463AD /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		987B6FB3158EA611008463AD /* browse_button_template.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = browse_button_template.pdf; sourceTree = "<group>"; };
+		9881962F15939D11003198B8 /* SIDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SIDefaults.plist; sourceTree = "<group>"; };
+		9881963715939D79003198B8 /* SIAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIAppDelegate.h; sourceTree = "<group>"; };
+		9881963815939D79003198B8 /* SIAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIAppDelegate.m; sourceTree = "<group>"; };
 		98FD463F15911DC4007D2FF4 /* DJPersistentCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJPersistentCache.h; sourceTree = "<group>"; };
 		98FD464015911DC4007D2FF4 /* DJPersistentCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPersistentCache.m; sourceTree = "<group>"; };
 		98FD464415911E48007D2FF4 /* SIAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIAdditions.h; sourceTree = "<group>"; };
@@ -156,6 +161,7 @@
 				987B6F91158E9E50008463AD /* InfoPlist.strings */,
 				987B6F94158E9E50008463AD /* main.m */,
 				987B6F96158E9E50008463AD /* SimilarImages-Prefix.pch */,
+				9881962F15939D11003198B8 /* SIDefaults.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -191,6 +197,8 @@
 			children = (
 				987B6F9A158E9E50008463AD /* SIDocument.h */,
 				987B6F9B158E9E50008463AD /* SIDocument.m */,
+				9881963715939D79003198B8 /* SIAppDelegate.h */,
+				9881963815939D79003198B8 /* SIAppDelegate.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -312,6 +320,7 @@
 				987B6FA2158E9E51008463AD /* MainMenu.xib in Resources */,
 				987B6FB4158EA611008463AD /* browse_button_template.pdf in Resources */,
 				9801805315900EE4007BF938 /* SIAppIcon.icns in Resources */,
+				9881963015939D11003198B8 /* SIDefaults.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,6 +363,7 @@
 				985D6D5A158EA80C000B56AD /* SIImageBrowserItem.m in Sources */,
 				98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */,
 				98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */,
+				9881963915939D79003198B8 /* SIAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,6 +554,7 @@
 				98FD46681591517A007D2FF4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
