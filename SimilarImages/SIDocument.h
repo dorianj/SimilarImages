@@ -22,7 +22,6 @@
 // Images returned from search.
 @property (readwrite, retain) NSArray* matchingImages;
 
-
 // For the trawling progress sheet
 @property (readwrite, assign) IBOutlet NSWindow* trawlProgressWindow;
 @property (readwrite, assign) IBOutlet NSTextField* trawlProgressImageCount;

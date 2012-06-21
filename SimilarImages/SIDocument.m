@@ -18,6 +18,9 @@
 // An array of all found images.
 @property (readwrite, retain) NSArray* images;
 
+// The image last searched for.
+@property (readwrite, retain) NSURL* needleImageURL;
+
 @end
 
 
@@ -27,7 +30,7 @@
 @synthesize needleImagePicker, matchingImages, resultsImageBrowserView, rootURL, haystackPathControl;
 
 // Private properties.
-@synthesize images, observedKeys;
+@synthesize images, observedKeys, needleImageURL;
 
 
 
@@ -37,13 +40,15 @@
 		return nil;
 	
 	[self setObservedKeys:[NSArray arrayWithObjects:
-						   @"matchingImages", // Observe matching images in order to update the browser when the results change
-						   @"rootURL",        // Observe changes to rootURL so we can re-scan.
+						   @"matchingImages",   // Update the browser when the results change
+						   @"rootURL",          // When rootURL is changed, scan the new one
+						   @"needleImageURL",   // When search URL is changed, re-search
 						   nil]];
 	
 	for (NSString* keyPath in [self observedKeys])
 		[self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
-						   
+		
+	[[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"SISearchSensitivity" options:NSKeyValueObservingOptionNew context:NULL];
     return self;
 }
 
@@ -51,6 +56,8 @@
 {
 	for (NSString* keyPath in [self observedKeys])
 		[self removeObserver:self forKeyPath:keyPath];
+	
+	[[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"SISearchSensitivity"];
 }
 
 - (void)awakeFromNib
@@ -91,17 +98,42 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if ([keyPath isEqualToString:@"matchingImages"])
-		[[self resultsImageBrowserView] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-	else if ([keyPath isEqualToString:@"rootURL"])
+	if (object == self)
 	{
-		if ([self rootURL] != nil)
+		if ([keyPath isEqualToString:@"matchingImages"])
 		{
+			[[self resultsImageBrowserView] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+		}
+		else if ([keyPath isEqualToString:@"rootURL"])
+		{
+			if ([self rootURL] == nil)
+				return;
+
 			NSString* windowTitle = [[self rootURL] lastPathComponent];
 			[self setDisplayName:windowTitle];
 			[[self windowForSheet] setTitle:windowTitle];
 			[[self rootURL] startAccessingSecurityScopedResource];
 			[self performSelectorOnMainThread:@selector(trawlRootURL) withObject:nil waitUntilDone:NO];
+		}
+		else if ([keyPath isEqualToString:@"needleImageURL"])
+		{			
+			if ([self needleImageURL] == nil)
+				return;
+			
+			[self setMatchingImages:[self findImagesVisuallySimilarToImage:[self needleImageURL]]];
+			
+			if ([keyPath isEqualToString:@"needleImageURL"] && ([[self matchingImages] count] == 0))
+				NSRunAlertPanel(@"No images found", @"No similar images were found. Try reducing sensitivity to get more results.", @"OK", @"", @"");
+		}
+	}
+	else if (object == [NSUserDefaults standardUserDefaults])
+	{	
+		if ([keyPath isEqualToString:@"SISearchSensitivity"])
+		{
+			if ([self needleImageURL] == nil)
+				return;
+				
+			[self setMatchingImages:[self findImagesVisuallySimilarToImage:[self needleImageURL]]];
 		}
 	}
 }
@@ -179,7 +211,7 @@
 		NSLog(@"%s doesn't support data of type %@", __func__, typeName);
 		return nil;
 	}
-	TRACE_FUNC();
+
 	// Pack up the root URL in a secure bookmark.
 	NSError* error;
 	NSData* rootURLData = [[self rootURL] bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope includingResourceValuesForKeys:nil relativeToURL:nil error:&error];
@@ -206,7 +238,7 @@
 		NSLog(@"%s doesn't support data of type %@", __func__, typeName);
 		return NO;
 	}
-TRACE_FUNC();
+
 	NSDictionary* searchInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 	
 	NSError* error;
@@ -253,21 +285,23 @@ TRACE_FUNC();
 - (NSArray*)findImagesVisuallySimilarToImage:(NSURL*)imageURL
 {
 	NSMutableArray* matches = [NSMutableArray array];
-	DJImageHash* hash = [[DJImageHash alloc] initWithImageURL:imageURL];
-	NSUInteger needle = [hash imageHash];
+	NSUInteger needle = DJImageHashFromURL(imageURL);
+	NSInteger maxHammingDistance = (NSInteger)(11.5 - [[NSUserDefaults standardUserDefaults] doubleForKey:@"SISearchSensitivity"]);
 	
 	[[self images] enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSDictionary* item = obj;
 		
 		// Don't match the needle image.
-		if ([[item objectForKey:@"url"] isEqual:imageURL])
-			return;
+	/*	if ([[item objectForKey:@"url"] isEqual:imageURL])
+			return;*/
 		
 		// Do a hamming distance between the needle and this image.
 		int dist = HAMMING_DISTANCE([[item objectForKey:@"hash"] unsignedIntegerValue], needle);
 		
-		if (dist > 5)
+		if (dist > maxHammingDistance)
 			return;
+		
+		NSLog(@"Found match %d: %@", dist, [[item objectForKey:@"url"] lastPathComponent]);
 		
 		// This image is a match: create a browser item for it and add to the matches builder array.
 		SIImageBrowserItem* browser_item = [[SIImageBrowserItem alloc] init];
@@ -275,16 +309,17 @@ TRACE_FUNC();
 		
 		@synchronized (matches)
 		{
-			[matches addObject:[NSDictionary dictionaryWithObjectsAndKeys:browser_item, @"bitem", nil]];
+			[matches addObject:[NSDictionary dictionaryWithObjectsAndKeys:browser_item, @"bitem", [NSNumber numberWithChar:(char)dist], @"dist", nil]];
 		}
 	}];
 	
+	[matches sortUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"dist" ascending:YES]]];
 	return matches;
 }
 
 - (IBAction)userDidDropImage:(id)sender
 {
-	[self setMatchingImages:[self findImagesVisuallySimilarToImage:[[self needleImagePicker] imageURL]]];	
+	[self setNeedleImageURL:[[self needleImagePicker] imageURL]];
 }
 
 #pragma mark -

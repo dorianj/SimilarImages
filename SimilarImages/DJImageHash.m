@@ -4,60 +4,54 @@
 
 #import "DjImageHash.h"
 
+static const size_t DOWNSAMPLE_SIZE = 8;
+static BOOL _initialized;
+static CGColorSpaceRef _gray_color_space;
+static NSDictionary* _image_source_options;
 
-CGColorSpaceRef _gray_color_space;
 
-@implementation DJImageHash
-
-@synthesize imageURL;
-
-+ (void)initialize
+static void _DJImageHashInitialize(void)
 {
-	_gray_color_space = CGColorSpaceCreateDeviceGray();
+	_gray_color_space = CGColorSpaceCreateDeviceGray();	
+	_image_source_options = [[NSDictionary alloc]  initWithObjectsAndKeys:
+		 [NSNumber numberWithUnsignedInteger:DOWNSAMPLE_SIZE], kCGImageSourceThumbnailMaxPixelSize, /* double pixel resolution becuase thumbnail creator respects aspect ratio */
+		 [NSNumber numberWithBool:NO], kCGImageSourceShouldCache,
+		 nil];
+	_initialized = YES;
 }
 
-+ (NSInteger)hashVersion
+NSInteger DJImageHashVersion()
 {
-	return 1;
+	return 2;
 }
 
-- (id)initWithImageURL:(NSURL*)image
-{
-	if (!(self = [super init]))
-		return nil;
-	
-	[self setImageURL:image];
-	return self;
-}
+#pragma mark -
+#pragma mark Calculating hashes
 
-- (BOOL)_calculateHash
+image_hash_t DJImageHashFromURL(NSURL* imageURL)
 {
-	const size_t DOWNSAMPLE_SIZE = 8;
-
-	// Load the image.
-	NSDictionary* image_source_options = [NSDictionary dictionaryWithObjectsAndKeys:
-										[NSNumber numberWithUnsignedInteger:DOWNSAMPLE_SIZE*2], kCGImageSourceThumbnailMaxPixelSize, /* double pixel resolution becuase thumbnail creator respects aspect ratio */
-										nil];
-	
-	CGImageSourceRef image_source = CGImageSourceCreateWithURL((__bridge CFURLRef)[self imageURL], (__bridge CFDictionaryRef)image_source_options);
+	if (!_initialized)
+		_DJImageHashInitialize();
+		
+	CGImageSourceRef image_source = CGImageSourceCreateWithURL((__bridge CFURLRef)imageURL, (__bridge CFDictionaryRef)_image_source_options);
 	
 	if (image_source == NULL)
 	{
-		NSLog(@"%s: couldn't load image source %@; file probably doesn't exist.", __func__, [self imageURL]);
-		return NO;
+		NSLog(@"%s: couldn't load image source %@; file probably doesn't exist.", __func__, imageURL);
+		return 0;
 	}
 	
-	CGImageRef thumbnail_image = CGImageSourceCreateThumbnailAtIndex(image_source, 0, (__bridge CFDictionaryRef)image_source_options);
+	CGImageRef thumbnail_image = CGImageSourceCreateThumbnailAtIndex(image_source, 0, (__bridge CFDictionaryRef)_image_source_options);
 	
 	if (thumbnail_image == NULL)
-		thumbnail_image = CGImageSourceCreateImageAtIndex(image_source, 0, (__bridge CFDictionaryRef)image_source_options);
+		thumbnail_image = CGImageSourceCreateImageAtIndex(image_source, 0, (__bridge CFDictionaryRef)_image_source_options);
 	
 	CFRelease(image_source);
 	
 	if (thumbnail_image == NULL)
 	{
 		NSLog(@"%s: couldn't generate thumbnail. Image data is probably corrupt.", __func__);
-		return NO;
+		return 0;
 	}
 	
 	// Create a gray 8x8 representation.
@@ -82,26 +76,14 @@ CGColorSpaceRef _gray_color_space;
 		if ((NSInteger)(*(p++)) > mean_pixel)
 			hash_value |= (1UL << i);
 
-	_hash = hash_value;
-	
-	
 	/*// Write the image to a test file.
-	CGImageRef image_ref = CGBitmapContextCreateImage(gray_bitmap_context);
-	NSImage* output_image = [[NSImage alloc] initWithCGImage:image_ref size:NSZeroSize];
-	CGImageRelease(image_ref);
-	[[output_image TIFFRepresentation] writeToFile:[@"~/ShortTerm/out.tif" stringByExpandingTildeInPath] atomically:NO];*/
+	 CGImageRef image_ref = CGBitmapContextCreateImage(gray_bitmap_context);
+	 NSImage* output_image = [[NSImage alloc] initWithCGImage:image_ref size:NSZeroSize];
+	 CGImageRelease(image_ref);
+	 [[output_image TIFFRepresentation] writeToFile:[@"~/ShortTerm/out.tif" stringByExpandingTildeInPath] atomically:NO];*/
 	
 	CGContextRelease(gray_bitmap_context);
-	return YES;
-}
-
-- (uint64_t)imageHash
-{
-	if (_hash == 0)
-		[self _calculateHash];
-		
-	return _hash;	
+	return (hash_value == 0) ? 1 : hash_value;
 }
 
 
-@end

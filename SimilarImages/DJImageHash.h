@@ -3,17 +3,21 @@
 
 #import <Foundation/Foundation.h>
 
-@interface DJImageHash : NSObject {
-@protected
-	uint64_t _hash;
-}
+typedef uint64_t image_hash_t;
 
-@property NSURL* imageURL;
+// Misc
+NSInteger DJImageHashVersion();
 
-- (id)initWithImageURL:(NSURL*)image;
-- (uint64_t)imageHash;
+#pragma mark Calculating hashes
 
-+ (NSInteger)hashVersion;
+image_hash_t DJImageHashFromURL(NSURL* image);
 
 
-@end
+#pragma mark Transforming hashes
+
+// Rotate a hash. `degrees' must equal one of: 0, 90, 180, 270
+image_hash_t DJImageHashRotate(image_hash_t hash, NSInteger degrees);
+
+// Flip a hash.
+image_hash_t DJImageHashVerticalFlip(image_hash_t hash);
+image_hash_t DJImageHashHorizontalFlip(NSUInteger hash);

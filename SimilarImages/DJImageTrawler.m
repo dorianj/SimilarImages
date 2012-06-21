@@ -55,6 +55,7 @@
 	[self setProcessingQueue:[[NSOperationQueue alloc] init]];
 	[self setSearchingQueue:[[NSOperationQueue alloc] init]];
 	[[self processingQueue] setSuspended:YES];
+	[[self processingQueue] setMaxConcurrentOperationCount:16];
 	[[self searchingQueue] setMaxConcurrentOperationCount:4];
 	[self setImages:[NSMutableArray array]];
 	_root = root_directory;
@@ -124,8 +125,7 @@
 	
 	
 	//NSLog(@"Hashing %@ (%@)", [self imageURL], cacheKey);
-	DJImageHash* imageHasher = [[DJImageHash alloc] initWithImageURL:[self imageURL]];
-	NSNumber* hash = [NSNumber numberWithUnsignedLongLong:[imageHasher imageHash]];
+	NSNumber* hash = [NSNumber numberWithUnsignedLongLong:DJImageHashFromURL([self imageURL])];
 	
 	if ([hash unsignedLongLongValue] == 0)
 	{
@@ -202,7 +202,7 @@
 			
 			// Check the cache before queueing this item.
 			NSDictionary* fileInfo = [child resourceValuesForKeys:[NSArray arrayWithObjects:NSURLContentModificationDateKey, NSURLFileSizeKey, nil] error:NULL];	
-			NSString* cacheKey = [[NSString stringWithFormat:@"%@-%f-%@-%d-1", [child path], [[fileInfo objectForKey:NSURLContentModificationDateKey] timeIntervalSince1970], [fileInfo objectForKey:NSURLFileSizeKey], [DJImageHash hashVersion]] sha1Digest];
+			NSString* cacheKey = [[NSString stringWithFormat:@"%@-%f-%@-%d-1", [child path], [[fileInfo objectForKey:NSURLContentModificationDateKey] timeIntervalSince1970], [fileInfo objectForKey:NSURLFileSizeKey], DJImageHashVersion()] sha1Digest];
 			NSNumber* hash = [[[self owner] hashCache] objectForKey:cacheKey];
 			
 			if (hash)
