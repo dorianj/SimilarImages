@@ -23,6 +23,7 @@
 		987B6FB4158EA611008463AD /* browse_button_template.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 987B6FB3158EA611008463AD /* browse_button_template.pdf */; };
 		9881963015939D11003198B8 /* SIDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9881962F15939D11003198B8 /* SIDefaults.plist */; };
 		9881963915939D79003198B8 /* SIAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9881963815939D79003198B8 /* SIAppDelegate.m */; };
+		9881963B1593C8D0003198B8 /* DJImageHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 985D6D52158EA6D1000B56AD /* DJImageHash.m */; };
 		98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464015911DC4007D2FF4 /* DJPersistentCache.m */; };
 		98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464515911E48007D2FF4 /* SIAdditions.m */; };
 		98FD465A1591517A007D2FF4 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98FD46591591517A007D2FF4 /* SenTestingKit.framework */; };
@@ -374,6 +375,7 @@
 				98FD46641591517A007D2FF4 /* SITests.m in Sources */,
 				98FD4669159151A9007D2FF4 /* DJPersistentCacheTest.m in Sources */,
 				98FD466A1591521E007D2FF4 /* DJPersistentCache.m in Sources */,
+				9881963B1593C8D0003198B8 /* DJImageHash.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -445,7 +447,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
