@@ -61,6 +61,7 @@
 - (BOOL)writeToURL:(NSURL*)cacheURL error:(NSError**)error
 {
 	@try {
+		[[self cacheLock] lock];
 		[NSKeyedArchiver archiveRootObject:[self cachedObjects] toFile:[cacheURL path]];
 	}
 	@catch (NSException *exception)
@@ -69,6 +70,10 @@
 		*error = [NSError errorWithDomain:NSPOSIXErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSURLErrorFailingURLErrorKey, cacheURL, nil]];
 		return NO;
 	}
+	@finally {
+		[[self cacheLock] unlock];
+	}
+		
 	
 	return YES;
 }
@@ -107,6 +112,13 @@
 	[newItem setLastAccessed:[[NSDate date] timeIntervalSince1970]];
 	[[self cachedObjects] setObject:newItem forKey:key];
 	
+	[[self cacheLock] unlock];
+}
+
+- (void)removeAllObjects
+{
+	[[self cacheLock] lock];
+	[[self cachedObjects] removeAllObjects];
 	[[self cacheLock] unlock];
 }
 

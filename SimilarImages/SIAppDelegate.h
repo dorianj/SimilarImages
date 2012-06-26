@@ -6,5 +6,5 @@
 @interface SIAppDelegate : NSObject <NSApplicationDelegate>
 
 
-
+- (IBAction)clearHashCache:(id)sender;
 @end

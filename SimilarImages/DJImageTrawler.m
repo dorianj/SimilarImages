@@ -11,7 +11,6 @@
 
 @property (readwrite) NSOperationQueue* processingQueue, * searchingQueue;
 @property (readwrite) NSMutableArray* images;
-@property (readwrite) DJPersistentCache* hashCache;
 
 @end
 
@@ -34,22 +33,32 @@
 
 @implementation DJImageTrawler
 
-@synthesize searchingQueue, processingQueue, hashCache, images;
+@synthesize searchingQueue, processingQueue, images;
+
++ (DJPersistentCache*)hashCache
+{
+	static DJPersistentCache* _hash_cache = nil;
+	
+	if (_hash_cache == nil)
+	{
+		@synchronized(self)
+		{
+			if (!_hash_cache)
+			{
+				NSURL* cacheURL = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
+				_hash_cache = [[DJPersistentCache alloc] initWithURL:[cacheURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@-hashCache.dat", self]]];
+				[_hash_cache setMaxEntryCount:100000];
+			}
+		}
+	}
+	
+	return _hash_cache;
+}
 
 - (id)initWithURL:(NSURL*)root_directory
 {
 	if (!(self = [super init]))
 		return nil;
-	
-	// Create a persistent cache for storing image hashes
-	NSURL* cacheURL = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
-
-	if (cacheURL != nil)
-	{
-		NSURL* hashCacheURL = [cacheURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@-hashCache.dat", [self class]]];
-		[self setHashCache:[[DJPersistentCache alloc] initWithURL:hashCacheURL]];
-		[[self hashCache] setMaxEntryCount:100000];
-	}
 		
 	// Create the operation queues for this instance.
 	[self setProcessingQueue:[[NSOperationQueue alloc] init]];
@@ -95,7 +104,7 @@
 	
 	NSLog(@"Trawl took %f seconds.", [[NSDate date] timeIntervalSinceDate:start]);
 	
-	[[self hashCache] performSelectorInBackground:@selector(writeToPersistentStore) withObject:nil];
+	[[[self class] hashCache] performSelectorInBackground:@selector(writeToPersistentStore) withObject:nil];
 }
 
 - (void)addUnprocessedImage
@@ -133,7 +142,7 @@
 		return;
 	}
 	
-	[[[self owner] hashCache] setObject:hash forKey:[self cacheKey]];
+	[[DJImageTrawler hashCache] setObject:hash forKey:[self cacheKey]];
 
 	
 	[newImageItem setObject:hash forKey:@"hash"];
@@ -203,7 +212,7 @@
 			// Check the cache before queueing this item.
 			NSDictionary* fileInfo = [child resourceValuesForKeys:[NSArray arrayWithObjects:NSURLContentModificationDateKey, NSURLFileSizeKey, nil] error:NULL];	
 			NSString* cacheKey = [[NSString stringWithFormat:@"%@-%f-%@-%d-1", [child path], [[fileInfo objectForKey:NSURLContentModificationDateKey] timeIntervalSince1970], [fileInfo objectForKey:NSURLFileSizeKey], DJImageHashVersion()] sha1Digest];
-			NSNumber* hash = [[[self owner] hashCache] objectForKey:cacheKey];
+			NSNumber* hash = [[DJImageTrawler hashCache] objectForKey:cacheKey];
 			
 			if (hash)
 			{

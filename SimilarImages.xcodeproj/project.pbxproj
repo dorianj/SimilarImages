@@ -24,6 +24,7 @@
 		9881963015939D11003198B8 /* SIDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9881962F15939D11003198B8 /* SIDefaults.plist */; };
 		9881963915939D79003198B8 /* SIAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9881963815939D79003198B8 /* SIAppDelegate.m */; };
 		9881963B1593C8D0003198B8 /* DJImageHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 985D6D52158EA6D1000B56AD /* DJImageHash.m */; };
+		98819643159928FC003198B8 /* DJImageHashTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 98819642159928FC003198B8 /* DJImageHashTest.m */; };
 		98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464015911DC4007D2FF4 /* DJPersistentCache.m */; };
 		98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464515911E48007D2FF4 /* SIAdditions.m */; };
 		98FD465A1591517A007D2FF4 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98FD46591591517A007D2FF4 /* SenTestingKit.framework */; };
@@ -64,6 +65,8 @@
 		9881962F15939D11003198B8 /* SIDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SIDefaults.plist; sourceTree = "<group>"; };
 		9881963715939D79003198B8 /* SIAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIAppDelegate.h; sourceTree = "<group>"; };
 		9881963815939D79003198B8 /* SIAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIAppDelegate.m; sourceTree = "<group>"; };
+		98819641159928FC003198B8 /* DJImageHashTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJImageHashTest.h; sourceTree = "<group>"; };
+		98819642159928FC003198B8 /* DJImageHashTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJImageHashTest.m; sourceTree = "<group>"; };
 		98FD463F15911DC4007D2FF4 /* DJPersistentCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJPersistentCache.h; sourceTree = "<group>"; };
 		98FD464015911DC4007D2FF4 /* DJPersistentCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPersistentCache.m; sourceTree = "<group>"; };
 		98FD464415911E48007D2FF4 /* SIAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIAdditions.h; sourceTree = "<group>"; };
@@ -228,6 +231,8 @@
 			children = (
 				98FD46621591517A007D2FF4 /* SITests.h */,
 				98FD46631591517A007D2FF4 /* SITests.m */,
+				98819641159928FC003198B8 /* DJImageHashTest.h */,
+				98819642159928FC003198B8 /* DJImageHashTest.m */,
 				98FD465015914A35007D2FF4 /* DJPersistentCacheTest.h */,
 				98FD465115914A35007D2FF4 /* DJPersistentCacheTest.m */,
 				98FD465D1591517A007D2FF4 /* Supporting Files */,
@@ -376,6 +381,7 @@
 				98FD4669159151A9007D2FF4 /* DJPersistentCacheTest.m in Sources */,
 				98FD466A1591521E007D2FF4 /* DJPersistentCache.m in Sources */,
 				9881963B1593C8D0003198B8 /* DJImageHash.m in Sources */,
+				98819643159928FC003198B8 /* DJImageHashTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

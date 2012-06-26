@@ -61,21 +61,6 @@
 
 - (void)awakeFromNib
 {
-	image_hash_t original = DJImageHashFromURL([NSURL fileURLWithPath:[@"~/bikes.jpg" stringByExpandingTildeInPath]]);
-	image_hash_t vert_real = DJImageHashFromURL([NSURL fileURLWithPath:[@"~/bikes vert.jpg" stringByExpandingTildeInPath]]);
-	image_hash_t pseudo_vert = DJImageHashVerticalFlip(original);
-	
-	image_hash_t horiz_real = DJImageHashFromURL([NSURL fileURLWithPath:[@"~/bikes horiz.jpg" stringByExpandingTildeInPath]]);
-	image_hash_t pseudo_horiz = DJImageHashHorizontalFlip(original);
-
-	
-	NSLog(@"Distance between real and vert: %ld", DJCompareHashes(original, vert_real));
-	NSLog(@"Distance between real and faked vert: %ld", DJCompareHashes(pseudo_vert, vert_real));
-	NSLog(@"Distance by auto-transformer: %ld", DJCompareHashesWithTransforms(original, vert_real));
-
-	NSLog(@"Distance between real and horiz: %ld", DJCompareHashes(original, horiz_real));
-	NSLog(@"Distance between real and faked horiz: %ld", DJCompareHashes(horiz_real, pseudo_horiz));
-	NSLog(@"Distance by auto-transformer: %ld", DJCompareHashesWithTransforms(original, horiz_real));
 
 
 	// Configure the results image browser
@@ -313,7 +298,7 @@
 			return;*/
 		
 		// Do a hamming distance between the needle and this image.
-		int dist = DJCompareHashesWithTransforms(hay_hash, needle_hash);
+		int dist = DJImageHashCompareWithTransforms(hay_hash, needle_hash);
 		
 		if (dist > maxHammingDistance)
 			return;

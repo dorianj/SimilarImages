@@ -26,7 +26,7 @@ image_hash_t DJImageHashHorizontalFlip(NSUInteger hash);
 #pragma mark Comparing Hashes
 
 // Bit distance between two hashes
-NSInteger DJCompareHashes(image_hash_t hash1, image_hash_t hash2);
+NSInteger DJImageHashCompare(image_hash_t hash1, image_hash_t hash2);
 
 // Bit distance between two hashes; first image will be transformed using all available transforms; closest distance will be returned.
-NSInteger DJCompareHashesWithTransforms(image_hash_t hash1, image_hash_t hash2);
+NSInteger DJImageHashCompareWithTransforms(image_hash_t hash1, image_hash_t hash2);

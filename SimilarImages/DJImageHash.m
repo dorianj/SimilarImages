@@ -10,13 +10,12 @@
 static const size_t DOWNSAMPLE_SIZE = 8;
 static BOOL _initialized;
 static CGColorSpaceRef _gray_color_space;
-static NSDictionary* _image_source_options;
-
+static CFDictionaryRef _image_source_options;
 
 static void _DJImageHashInitialize(void)
 {
 	_gray_color_space = CGColorSpaceCreateDeviceGray();	
-	_image_source_options = [[NSDictionary alloc]  initWithObjectsAndKeys:
+	_image_source_options = (__bridge_retained CFDictionaryRef)[[NSDictionary alloc]  initWithObjectsAndKeys:
 		 [NSNumber numberWithUnsignedInteger:DOWNSAMPLE_SIZE*2], kCGImageSourceThumbnailMaxPixelSize, /* double pixel resolution becuase thumbnail creator respects aspect ratio */
 		 [NSNumber numberWithBool:NO], kCGImageSourceShouldCache,
 		 nil];
@@ -36,7 +35,7 @@ image_hash_t DJImageHashFromURL(NSURL* imageURL)
 	if (!_initialized)
 		_DJImageHashInitialize();
 		
-	CGImageSourceRef image_source = CGImageSourceCreateWithURL((__bridge CFURLRef)imageURL, (__bridge CFDictionaryRef)_image_source_options);
+	CGImageSourceRef image_source = CGImageSourceCreateWithURL((__bridge CFURLRef)imageURL, _image_source_options);
 	
 	if (image_source == NULL)
 	{
@@ -44,10 +43,10 @@ image_hash_t DJImageHashFromURL(NSURL* imageURL)
 		return 0;
 	}
 	
-	CGImageRef thumbnail_image = CGImageSourceCreateThumbnailAtIndex(image_source, 0, (__bridge CFDictionaryRef)_image_source_options);
+	CGImageRef thumbnail_image = CGImageSourceCreateThumbnailAtIndex(image_source, 0, _image_source_options);
 	
 	if (thumbnail_image == NULL)
-		thumbnail_image = CGImageSourceCreateImageAtIndex(image_source, 0, (__bridge CFDictionaryRef)_image_source_options);
+		thumbnail_image = CGImageSourceCreateImageAtIndex(image_source, 0, _image_source_options);
 	
 	CFRelease(image_source);
 	
@@ -93,6 +92,27 @@ image_hash_t DJImageHashFromURL(NSURL* imageURL)
 #pragma mark -
 #pragma mark Transforming hashes
 
+// From Hacker's Delight, 7-3, http://www.hackersdelight.org/HDcode/transpose8.c.txt
+static uint64_t transpose8b64(uint64_t x)
+{
+	return	(x & 0x8040201008040201LL)         |
+			(x & 0x0080402010080402LL) <<  7   |
+			(x & 0x0000804020100804LL) << 14   |
+			(x & 0x0000008040201008LL) << 21   |
+			(x & 0x0000000080402010LL) << 28   |
+			(x & 0x0000000000804020LL) << 35   |
+			(x & 0x0000000000008040LL) << 42   |
+			(x & 0x0000000000000080LL) << 49   |
+			((x >>  7) & 0x0080402010080402LL) |
+			((x >> 14) & 0x0000804020100804LL) |
+			((x >> 21) & 0x0000008040201008LL) |
+			((x >> 28) & 0x0000000080402010LL) |
+			((x >> 35) & 0x0000000000804020LL) |
+			((x >> 42) & 0x0000000000008040LL) |
+			((x >> 49) & 0x0000000000000080LL) ;
+}
+
+
 // Rotate a hash. `degrees' must equal one of: 0, 90, 180, 270
 image_hash_t DJImageHashRotate(image_hash_t hash, NSInteger degrees)
 {
@@ -102,23 +122,19 @@ image_hash_t DJImageHashRotate(image_hash_t hash, NSInteger degrees)
 	{
 		case 0:
 			return hash;
-			break;
 			
 		case 90:
-
-			
-			break;
-			
+			return DJImageHashHorizontalFlip(transpose8b64(hash));
 			
 		case 180:
-			break;
+			return DJImageHashVerticalFlip(DJImageHashHorizontalFlip(hash));
 		
 		case 270:
+			return DJImageHashVerticalFlip(transpose8b64(hash));
 			break;
 	}
 	
-	
-	return new_hash;
+	return 0;
 }
 
 // Flip a hash.
@@ -154,24 +170,27 @@ image_hash_t DJImageHashHorizontalFlip(NSUInteger hash)
 #pragma mark Comparing Hashes
 
 // Bit distance between two hashes
-NSInteger DJCompareHashes(image_hash_t hash1, image_hash_t hash2)
+NSInteger DJImageHashCompare(image_hash_t hash1, image_hash_t hash2)
 {
 	return (NSInteger)HAMMING_DISTANCE(hash1, hash2);
 }
 
 // Bit distance between two hashes; first image will be transformed using all available transforms; closest distance will be returned.
-NSInteger DJCompareHashesWithTransforms(image_hash_t hash1, image_hash_t hash2)
+NSInteger DJImageHashCompareWithTransforms(image_hash_t hash1, image_hash_t hash2)
 {
-	image_hash_t alternateHashes[3];
+	image_hash_t alternateHashes[6];
 	
 	alternateHashes[0] = hash1;
 	alternateHashes[1] = DJImageHashVerticalFlip(hash1);
-	alternateHashes[2] = DJImageHashHorizontalFlip(hash1);	
+	alternateHashes[2] = DJImageHashHorizontalFlip(hash1);
+	alternateHashes[3] = DJImageHashRotate(hash1, 90);
+	alternateHashes[4] = DJImageHashRotate(hash1, 180);
+	alternateHashes[5] = DJImageHashRotate(hash1, 270);
 	
 	int smallestDistance = 64, dist;
 	for (int i = 0; i < (int)(sizeof(alternateHashes) / sizeof(image_hash_t)); i++)
 	{
-		dist = DJCompareHashes(alternateHashes[i], hash2);
+		dist = DJImageHashCompare(alternateHashes[i], hash2);
 		
 		if (dist < smallestDistance)
 			smallestDistance = dist;
