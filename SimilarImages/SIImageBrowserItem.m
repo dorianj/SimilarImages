@@ -32,4 +32,12 @@
 	return [[self imageURL] path];
 }
 
+- (BOOL)isEqual:(id)object
+{
+	if ([object respondsToSelector:@selector(imageUID)])
+		return [[self imageURL] isEqual:[object imageUID]];
+	
+	return NO;
+}
+
 @end

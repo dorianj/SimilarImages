@@ -64,7 +64,7 @@
 	[self setProcessingQueue:[[NSOperationQueue alloc] init]];
 	[self setSearchingQueue:[[NSOperationQueue alloc] init]];
 	[[self processingQueue] setSuspended:YES];
-	[[self processingQueue] setMaxConcurrentOperationCount:16];
+	[[self processingQueue] setMaxConcurrentOperationCount:1];
 	[[self searchingQueue] setMaxConcurrentOperationCount:4];
 	[self setImages:[NSMutableArray array]];
 	_root = root_directory;
@@ -131,24 +131,27 @@
 	
 	NSMutableDictionary* newImageItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:[self imageURL], @"url", nil];
 	
-	
-	
 	//NSLog(@"Hashing %@ (%@)", [self imageURL], cacheKey);
-	NSNumber* hash = [NSNumber numberWithUnsignedLongLong:DJImageHashFromURL([self imageURL])];
+	DJImageHash* hash = [[DJImageHash alloc] initWithURL:[self imageURL]];
+	[hash calculateHashWithTransforms:NO];
+
+	// Note to our owner that we're finished with the computationally intensive part.
+	[[self owner] addProcessedImage];
 	
-	if ([hash unsignedLongLongValue] == 0)
+	
+	// If the hash failed, don't add it to owner's images.
+	if (hash == nil)
 	{
 		NSLog(@"unable to hash %@", [self imageURL]);
 		return;
 	}
 	
+	// Store this hash in the cache.
 	[[DJImageTrawler hashCache] setObject:hash forKey:[self cacheKey]];
 
-	
+	// Set the hash item, then add to owner's images.
 	[newImageItem setObject:hash forKey:@"hash"];
-	
-	[[self owner] addProcessedImage];
-	
+
 	@synchronized ([[self owner] images])
 	{
 		[[[self owner] images] addObject:newImageItem];
@@ -211,7 +214,7 @@
 			
 			// Check the cache before queueing this item.
 			NSDictionary* fileInfo = [child resourceValuesForKeys:[NSArray arrayWithObjects:NSURLContentModificationDateKey, NSURLFileSizeKey, nil] error:NULL];	
-			NSString* cacheKey = [[NSString stringWithFormat:@"%@-%f-%@-%d-1", [child path], [[fileInfo objectForKey:NSURLContentModificationDateKey] timeIntervalSince1970], [fileInfo objectForKey:NSURLFileSizeKey], DJImageHashVersion()] sha1Digest];
+			NSString* cacheKey = [[NSString stringWithFormat:@"%@-%f-%@-%d-1", [child path], [[fileInfo objectForKey:NSURLContentModificationDateKey] timeIntervalSince1970], [fileInfo objectForKey:NSURLFileSizeKey], [DJImageHash latestVersion]] sha1Digest];
 			NSNumber* hash = [[DJImageTrawler hashCache] objectForKey:cacheKey];
 			
 			if (hash)

@@ -134,7 +134,13 @@
 			if ([self needleImageURL] == nil)
 				return;
 				
-			[self setMatchingImages:[self findImagesVisuallySimilarToImage:[self needleImageURL]]];
+			NSArray* newMatches = [self findImagesVisuallySimilarToImage:[self needleImageURL]];
+			
+			if (![newMatches isEqualToArray:[self matchingImages]])
+			{
+				NSLog(@"Changes!");
+				[self setMatchingImages:newMatches];
+			}
 		}
 	}
 }
@@ -286,24 +292,21 @@
 - (NSArray*)findImagesVisuallySimilarToImage:(NSURL*)imageURL
 {
 	NSMutableArray* matches = [NSMutableArray array];
-	image_hash_t needle_hash = DJImageHashFromURL(imageURL);
-	NSInteger maxHammingDistance = (NSInteger)(11.5 - [[NSUserDefaults standardUserDefaults] doubleForKey:@"SISearchSensitivity"]);
+	DJImageHash* needle_hash = [[DJImageHash alloc] initWithURL:imageURL];
+	NSNumber* sensitivity = [[NSUserDefaults standardUserDefaults] objectForKey:@"SISearchSensitivity"];
 	
 	[[self images] enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSDictionary* item = obj;
-		image_hash_t hay_hash = [[item objectForKey:@"hash"] unsignedIntegerValue];
 		
-		// Don't match the needle image.
-	/*	if ([[item objectForKey:@"url"] isEqual:imageURL])
-			return;*/
+		NSNumber* similarity = [needle_hash similarityTo:[item objectForKey:@"hash"] considerTransforms:YES];
 		
-		// Do a hamming distance between the needle and this image.
-		int dist = DJImageHashCompareWithTransforms(hay_hash, needle_hash);
+		NSLog(@"Considering %@ (%@ match)", [[item objectForKey:@"url"] lastPathComponent], similarity);
 		
-		if (dist > maxHammingDistance)
+		if (!similarity || ([sensitivity compare:similarity] == NSOrderedDescending) )
 			return;
 		
-		NSLog(@"Found match %d: %@", dist, [[item objectForKey:@"url"] lastPathComponent]);
+		NSLog(@"Found match %@: %@", similarity, [[item objectForKey:@"url"] lastPathComponent]);
+
 		
 		// This image is a match: create a browser item for it and add to the matches builder array.
 		SIImageBrowserItem* browser_item = [[SIImageBrowserItem alloc] init];
@@ -311,7 +314,7 @@
 		
 		@synchronized (matches)
 		{
-			[matches addObject:[NSDictionary dictionaryWithObjectsAndKeys:browser_item, @"bitem", [NSNumber numberWithChar:(char)dist], @"dist", nil]];
+			[matches addObject:[NSDictionary dictionaryWithObjectsAndKeys:browser_item, @"bitem", similarity, @"dist", nil]];
 		}
 	}];
 	

@@ -25,6 +25,8 @@
 		9881963915939D79003198B8 /* SIAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9881963815939D79003198B8 /* SIAppDelegate.m */; };
 		9881963B1593C8D0003198B8 /* DJImageHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 985D6D52158EA6D1000B56AD /* DJImageHash.m */; };
 		98819643159928FC003198B8 /* DJImageHashTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 98819642159928FC003198B8 /* DJImageHashTest.m */; };
+		9881964815996774003198B8 /* libfftw3f.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9881964715996773003198B8 /* libfftw3f.3.dylib */; };
+		9881964915996784003198B8 /* libfftw3f.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9881964715996773003198B8 /* libfftw3f.3.dylib */; };
 		98FD464115911DC4007D2FF4 /* DJPersistentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464015911DC4007D2FF4 /* DJPersistentCache.m */; };
 		98FD464615911E48007D2FF4 /* SIAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 98FD464515911E48007D2FF4 /* SIAdditions.m */; };
 		98FD465A1591517A007D2FF4 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98FD46591591517A007D2FF4 /* SenTestingKit.framework */; };
@@ -67,6 +69,7 @@
 		9881963815939D79003198B8 /* SIAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIAppDelegate.m; sourceTree = "<group>"; };
 		98819641159928FC003198B8 /* DJImageHashTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJImageHashTest.h; sourceTree = "<group>"; };
 		98819642159928FC003198B8 /* DJImageHashTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJImageHashTest.m; sourceTree = "<group>"; };
+		9881964715996773003198B8 /* libfftw3f.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfftw3f.3.dylib; path = ../../../../usr/local/Cellar/fftw/3.3.2/lib/libfftw3f.3.dylib; sourceTree = "<group>"; };
 		98FD463F15911DC4007D2FF4 /* DJPersistentCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJPersistentCache.h; sourceTree = "<group>"; };
 		98FD464015911DC4007D2FF4 /* DJPersistentCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPersistentCache.m; sourceTree = "<group>"; };
 		98FD464415911E48007D2FF4 /* SIAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIAdditions.h; sourceTree = "<group>"; };
@@ -87,6 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9881964815996774003198B8 /* libfftw3f.3.dylib in Frameworks */,
 				987B6FAF158EA53D008463AD /* Quartz.framework in Frameworks */,
 				987B6F89158E9E50008463AD /* Cocoa.framework in Frameworks */,
 			);
@@ -98,6 +102,7 @@
 			files = (
 				98FD465A1591517A007D2FF4 /* SenTestingKit.framework in Frameworks */,
 				98FD465B1591517A007D2FF4 /* Cocoa.framework in Frameworks */,
+				9881964915996784003198B8 /* libfftw3f.3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,6 +112,7 @@
 		987B6F79158E9E50008463AD = {
 			isa = PBXGroup;
 			children = (
+				9881964715996773003198B8 /* libfftw3f.3.dylib */,
 				987B6F8E158E9E50008463AD /* SimilarImages */,
 				98FD465C1591517A007D2FF4 /* SITests */,
 				987B6F87158E9E50008463AD /* Frameworks */,
@@ -490,6 +496,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimilarImages/SimilarImages-Prefix.pch";
 				INFOPLIST_FILE = "SimilarImages/SimilarImages-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/fftw/3.3.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -504,6 +514,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimilarImages/SimilarImages-Prefix.pch";
 				INFOPLIST_FILE = "SimilarImages/SimilarImages-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/fftw/3.3.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -517,6 +531,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SITests/SITests-Prefix.pch";
 				INFOPLIST_FILE = "SITests/SITests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/fftw/3.3.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -529,6 +547,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SITests/SITests-Prefix.pch";
 				INFOPLIST_FILE = "SITests/SITests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/fftw/3.3.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
