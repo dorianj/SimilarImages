@@ -26,7 +26,7 @@
 	STAssertTrue(original && original_90deg && original_180deg && original_270deg && original_vert && original_horiz, @"Not all test images were found.");
 
 
-//	STAssertTrue([[original similarityTo:original considerTransforms:NO] compare:expected_similarity] == NSOrderedDescending, @"similarityTo: must 100 for identical inputs.");
+	STAssertTrue([[original similarityTo:original considerTransforms:NO] compare:expected_similarity] == NSOrderedDescending, @"similarityTo: must 100 for identical inputs.");
 
 	similarity = [original similarityTo:original_90deg considerTransforms:YES];
 	STAssertTrue([similarity compare:expected_similarity] == NSOrderedDescending, @"DJImageHashRotate 90deg: similarity should be > %@, but was %@", expected_similarity, similarity);

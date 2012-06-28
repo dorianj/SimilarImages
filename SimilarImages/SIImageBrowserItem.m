@@ -35,7 +35,7 @@
 - (BOOL)isEqual:(id)object
 {
 	if ([object respondsToSelector:@selector(imageUID)])
-		return [[self imageURL] isEqual:[object imageUID]];
+		return [[self imageUID] isEqual:[object imageUID]];
 	
 	return NO;
 }

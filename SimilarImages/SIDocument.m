@@ -133,14 +133,24 @@
 		{
 			if ([self needleImageURL] == nil)
 				return;
-				
+			
+			BOOL changed = NO;
 			NSArray* newMatches = [self findImagesVisuallySimilarToImage:[self needleImageURL]];
 			
-			if (![newMatches isEqualToArray:[self matchingImages]])
+			if ([newMatches count] != [[self matchingImages] count])
+				changed = YES;
+			else
 			{
-				NSLog(@"Changes!");
-				[self setMatchingImages:newMatches];
+				for (NSUInteger i = 0; i < [[self matchingImages] count]; i++)
+					if (![[[[self matchingImages] objectAtIndex:i] objectForKey:@"bitem"] isEqual:[[newMatches objectAtIndex:i] objectForKey:@"bitem"]])
+					{
+						changed = YES;
+						break;
+					}
 			}
+			
+			if (changed)
+				[self setMatchingImages:newMatches];
 		}
 	}
 }
@@ -318,7 +328,7 @@
 		}
 	}];
 	
-	[matches sortUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"dist" ascending:YES]]];
+	[matches sortUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"dist" ascending:NO]]];
 	return matches;
 }
 
