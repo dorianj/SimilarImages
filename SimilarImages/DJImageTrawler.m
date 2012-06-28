@@ -64,7 +64,7 @@
 	[self setProcessingQueue:[[NSOperationQueue alloc] init]];
 	[self setSearchingQueue:[[NSOperationQueue alloc] init]];
 	[[self processingQueue] setSuspended:YES];
-	[[self processingQueue] setMaxConcurrentOperationCount:1];
+	[[self processingQueue] setMaxConcurrentOperationCount:16];
 	[[self searchingQueue] setMaxConcurrentOperationCount:4];
 	[self setImages:[NSMutableArray array]];
 	_root = root_directory;

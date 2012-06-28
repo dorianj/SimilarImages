@@ -9,6 +9,7 @@
 {
 	NSPasteboard* pboard = [sender draggingPasteboard];
 	NSArray* objs = [pboard readObjectsForClasses:[NSArray arrayWithObject:[NSURL class]] options:nil];
+	// xxx: when dragged from chrome here, objs contains "NSURLPboardType" but doesn't readObjectsForClasses pick it up. might have to use NSData?
 	[self setImageURL:[objs lastObject]];
 	[super concludeDragOperation:sender];
 }

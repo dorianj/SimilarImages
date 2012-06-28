@@ -310,12 +310,12 @@
 		
 		NSNumber* similarity = [needle_hash similarityTo:[item objectForKey:@"hash"] considerTransforms:YES];
 		
-		NSLog(@"Considering %@ (%@ match)", [[item objectForKey:@"url"] lastPathComponent], similarity);
+		//NSLog(@"Considering %@ (%@ match)", [[item objectForKey:@"url"] lastPathComponent], similarity);
 		
 		if (!similarity || ([sensitivity compare:similarity] == NSOrderedDescending) )
 			return;
 		
-		NSLog(@"Found match %@: %@", similarity, [[item objectForKey:@"url"] lastPathComponent]);
+		//NSLog(@"Found match %@: %@", similarity, [[item objectForKey:@"url"] lastPathComponent]);
 
 		
 		// This image is a match: create a browser item for it and add to the matches builder array.
@@ -334,6 +334,7 @@
 
 - (IBAction)userDidDropImage:(id)sender
 {
+	[self setNeedleImageURL:nil];
 	[self setNeedleImageURL:[[self needleImagePicker] imageURL]];
 }
 
