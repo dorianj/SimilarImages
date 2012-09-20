@@ -1,4 +1,10 @@
-/*	Copyright 2012 Dorian Johnson <2012@dorianj.net>
+/* Copyright (C) 2012 Dorian Johnson <2012@dorianj.net>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+    
+/*
 	Implements the "averaging" technique found here: http://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html
  */
 

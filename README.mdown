@@ -1,0 +1,7 @@
+SimilarImages
+===
+
+SimilarImages is a Mac application that searches for images on your filesystem using a reference image. It is licensed under the Mozilla Public License, version 2.
+
+
+The algorithm used to determine image similarity is an original implementation of the DCT-based technique described by http://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html, which was originally implemented in the open source pHash library. My implementation uses the fftw3 library to perform DCT transforms.
