@@ -84,7 +84,7 @@
 	// Wait for all operations to finish.
 	for (;;)
 	{
-		usleep(150000);
+		usleep(50000);
 		BOOL finished_searching = [[[self searchingQueue] operations] count] == 0;
 		
 		if (finished_searching)
@@ -97,6 +97,8 @@
 		
 		if (finished_searching && [[[self processingQueue] operations] count] == 0)
 			break;
+			
+		usleep(200000);
 	}
 	
 	[[self searchingQueue] waitUntilAllOperationsAreFinished];
@@ -171,7 +173,7 @@
 	static NSArray* _extensions = nil;
 	
 	if (_extensions == nil)
-		_extensions = [NSArray arrayWithObjects:@"jpg", @"jpeg", @"bmp", @"git", @"png", @"tif", @"tiff", @"jp2", nil];
+		_extensions = [NSArray arrayWithObjects:@"jpg", @"jpeg", @"bmp", @"gif", @"png", @"tif", @"tiff", @"jp2", @"psd", @"pdf", nil];
 	
 	return _extensions;
 }

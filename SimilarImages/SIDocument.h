@@ -3,7 +3,8 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
-#import "SIImageView.h"
+
+@class SIImageView;
 
 @interface SIDocument : NSDocument
 

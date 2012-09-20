@@ -4,6 +4,7 @@
 #import "SIDocument.h"
 #import "SIImageBrowserItem.h"
 
+#import "SIImageView.h"
 #import "DJImageTrawler.h"
 #import "DJImageHash.h"
 
@@ -18,7 +19,7 @@
 @property (readwrite, retain) NSArray* images;
 
 // The image last searched for.
-@property (readwrite, retain) NSURL* needleImageURL;
+@property (readwrite, retain) DJImageHash* needleImageHash;
 
 @end
 
@@ -29,7 +30,7 @@
 @synthesize needleImagePicker, matchingImages, resultsImageBrowserView, rootURL, haystackPathControl;
 
 // Private properties.
-@synthesize images, observedKeys, needleImageURL;
+@synthesize images, observedKeys, needleImageHash;
 
 
 
@@ -41,7 +42,7 @@
 	[self setObservedKeys:[NSArray arrayWithObjects:
 						   @"matchingImages",   // Update the browser when the results change
 						   @"rootURL",          // When rootURL is changed, scan the new one
-						   @"needleImageURL",   // When search URL is changed, re-search
+						   @"needleImageHash",   // When search URL is changed, re-search
 						   nil]];
 	
 	for (NSString* keyPath in [self observedKeys])
@@ -116,43 +117,49 @@
 			[[self rootURL] startAccessingSecurityScopedResource];
 			[self performSelectorOnMainThread:@selector(trawlRootURL) withObject:nil waitUntilDone:NO];
 		}
-		else if ([keyPath isEqualToString:@"needleImageURL"])
+		else if ([keyPath isEqualToString:@"needleImageHash"])
 		{			
-			if ([self needleImageURL] == nil)
+			if ([self needleImageHash] == nil)
 				return;
 			
-			[self setMatchingImages:[self findImagesVisuallySimilarToImage:[self needleImageURL]]];
+			[self setMatchingImages:[self findImagesVisuallySimilarToImage:[self needleImageHash]]];
 			
-			if ([keyPath isEqualToString:@"needleImageURL"] && ([[self matchingImages] count] == 0))
+			if ([keyPath isEqualToString:@"needleImageHash"] && ([[self matchingImages] count] == 0))
 				NSRunAlertPanel(@"No images found", @"No similar images were found. Try reducing sensitivity to get more results.", @"OK", @"", @"");
 		}
 	}
 	else if (object == [NSUserDefaults standardUserDefaults])
 	{	
 		if ([keyPath isEqualToString:@"SISearchSensitivity"])
-		{
-			if ([self needleImageURL] == nil)
-				return;
-			
-			BOOL changed = NO;
-			NSArray* newMatches = [self findImagesVisuallySimilarToImage:[self needleImageURL]];
-			
-			if ([newMatches count] != [[self matchingImages] count])
-				changed = YES;
-			else
-			{
-				for (NSUInteger i = 0; i < [[self matchingImages] count]; i++)
-					if (![[[[self matchingImages] objectAtIndex:i] objectForKey:@"bitem"] isEqual:[[newMatches objectAtIndex:i] objectForKey:@"bitem"]])
-					{
-						changed = YES;
-						break;
-					}
-			}
-			
-			if (changed)
-				[self setMatchingImages:newMatches];
+		{			
+			[[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(searchSensitivityChanged) object:nil];
+			[self performSelector:@selector(searchSensitivityChanged) withObject:nil afterDelay:0.25];
 		}
 	}
+}
+
+- (void)searchSensitivityChanged
+{
+	if ([self needleImageHash] == nil)
+		return;
+	
+	BOOL changed = NO;
+	NSArray* newMatches = [self findImagesVisuallySimilarToImage:[self needleImageHash]];
+	
+	if ([newMatches count] != [[self matchingImages] count])
+		changed = YES;
+	else
+	{
+		for (NSUInteger i = 0; i < [[self matchingImages] count]; i++)
+			if (![[[[self matchingImages] objectAtIndex:i] objectForKey:@"bitem"] isEqual:[[newMatches objectAtIndex:i] objectForKey:@"bitem"]])
+			{
+				changed = YES;
+				break;
+			}
+	}
+	
+	if (changed)
+		[self setMatchingImages:newMatches];
 }
 
 
@@ -299,16 +306,16 @@
 #pragma mark -
 #pragma mark Finding visually similar images (after trawling)
 
-- (NSArray*)findImagesVisuallySimilarToImage:(NSURL*)imageURL
+- (NSArray*)findImagesVisuallySimilarToImage:(DJImageHash*)needleHash
 {
 	NSMutableArray* matches = [NSMutableArray array];
-	DJImageHash* needle_hash = [[DJImageHash alloc] initWithURL:imageURL];
 	NSNumber* sensitivity = [[NSUserDefaults standardUserDefaults] objectForKey:@"SISearchSensitivity"];
+	[needleHash calculateHashWithTransforms:YES];
 	
 	[[self images] enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSDictionary* item = obj;
 		
-		NSNumber* similarity = [needle_hash similarityTo:[item objectForKey:@"hash"] considerTransforms:YES];
+		NSNumber* similarity = [needleHash similarityTo:[item objectForKey:@"hash"] considerTransforms:YES];
 		
 		//NSLog(@"Considering %@ (%@ match)", [[item objectForKey:@"url"] lastPathComponent], similarity);
 		
@@ -334,8 +341,17 @@
 
 - (IBAction)userDidDropImage:(id)sender
 {
-	[self setNeedleImageURL:nil];
-	[self setNeedleImageURL:[[self needleImagePicker] imageURL]];
+	DJImageHash* hash = [[DJImageHash alloc] init];
+
+	if ([[self needleImagePicker] imageURL] != nil)
+		[hash setURL:[[self needleImagePicker] imageURL]];
+		
+	else if ([[self needleImagePicker] image] != nil)
+		[hash setImage:[[self needleImagePicker] image]];
+	else
+		hash = nil;
+	
+	[self setNeedleImageHash:hash];
 }
 
 #pragma mark -

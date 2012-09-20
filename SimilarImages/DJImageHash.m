@@ -32,7 +32,7 @@ OSSpinLock imagehash_fftw_lock = OS_SPINLOCK_INIT;
 
 @implementation DJImageHash
 
-@synthesize URL, version, hashes;
+@synthesize URL, version, hashes, image;
 
 - (id)init
 {
@@ -176,6 +176,18 @@ OSSpinLock imagehash_fftw_lock = OS_SPINLOCK_INIT;
 	static CFDictionaryRef _image_source_options;
 	static BOOL _initialized = NO;
 	
+	if ([self image])
+	{
+		CGImageRef imageRef = [[self image] CGImageForProposedRect:NULL context:nil hints:nil];
+
+		if (imageRef == NULL)
+			return NO;
+			
+		[self setHashes:[self _calculateDCTHashesForCGImage:imageRef transforms:transforms]];
+		return [[self hashes] count] > 0;
+	}
+	
+	
 	if (!_initialized)
 	{
 		_gray_color_space = CGColorSpaceCreateDeviceGray();
@@ -214,7 +226,7 @@ OSSpinLock imagehash_fftw_lock = OS_SPINLOCK_INIT;
 	return [[self hashes] count] > 0;	
 }
 
-- (NSDictionary*)_calculateDCTHashesForCGImage:(CGImageRef)image transforms:(BOOL)calculateTransforms
+- (NSDictionary*)_calculateDCTHashesForCGImage:(CGImageRef)imageRef transforms:(BOOL)calculateTransforms
 {
 	static CGColorSpaceRef _gray_color_space = NULL;
 	
@@ -228,7 +240,7 @@ OSSpinLock imagehash_fftw_lock = OS_SPINLOCK_INIT;
 	CGContextRef bcontext = CGBitmapContextCreate(data, DCT_DOWNSAMPLE_SIZE, DCT_DOWNSAMPLE_SIZE, 8, DCT_DOWNSAMPLE_SIZE, _gray_color_space, kCGImageAlphaNone);
 	CGRect drawImageRect = CGRectMake(0, 0, DCT_DOWNSAMPLE_SIZE, DCT_DOWNSAMPLE_SIZE);
 	CGContextSetInterpolationQuality(bcontext, kCGInterpolationHigh);
-	CGContextDrawImage(bcontext, drawImageRect, image);
+	CGContextDrawImage(bcontext, drawImageRect, imageRef);
 	
 	// Hash the original image.
 	[calculatedHashes setObject:[self _dctHashForImageData:data] forKey:[NSNumber numberWithInteger:DJImageHashTypeDCT]];
@@ -248,7 +260,7 @@ OSSpinLock imagehash_fftw_lock = OS_SPINLOCK_INIT;
 			if ([transformIndex isKindOfClass:[NSNull class]])
 				break;
 			
-			CGContextDrawImage(bcontext, drawImageRect, image);
+			CGContextDrawImage(bcontext, drawImageRect, imageRef);
 			[self writeBitmapContext:bcontext toDebugFile:[NSString stringWithFormat:@"rot-%@", transformIndex]];
 			[calculatedHashes setObject:[self _dctHashForImageData:data] forKey:transformIndex];
 		}
@@ -256,7 +268,7 @@ OSSpinLock imagehash_fftw_lock = OS_SPINLOCK_INIT;
 		// Flip horizontally.
 		CGContextScaleCTM(bcontext, -1.0, 1.0);
 		CGContextTranslateCTM(bcontext, -DCT_DOWNSAMPLE_SIZE, 0);
-		CGContextDrawImage(bcontext, drawImageRect, image);
+		CGContextDrawImage(bcontext, drawImageRect, imageRef);
 		[self writeBitmapContext:bcontext toDebugFile:@"horiz"];
 		[calculatedHashes setObject:[self _dctHashForImageData:data] forKey:[NSNumber numberWithInteger:DJImageHashTypeDCTFlippedHorizontally]];
 		
@@ -264,7 +276,7 @@ OSSpinLock imagehash_fftw_lock = OS_SPINLOCK_INIT;
 		// Flip vertically.
 		CGContextScaleCTM(bcontext, -1.0, -1.0);
 		CGContextTranslateCTM(bcontext, -DCT_DOWNSAMPLE_SIZE, -DCT_DOWNSAMPLE_SIZE);
-		CGContextDrawImage(bcontext, drawImageRect, image);
+		CGContextDrawImage(bcontext, drawImageRect, imageRef);
 		[self writeBitmapContext:bcontext toDebugFile:@"vert"];
 		[calculatedHashes setObject:[self _dctHashForImageData:data] forKey:[NSNumber numberWithInteger:DJImageHashTypeDCTFlippedVertically]];
 	}

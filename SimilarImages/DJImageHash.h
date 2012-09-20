@@ -6,6 +6,7 @@
 @interface DJImageHash : NSObject <NSCoding>
 
 @property (readwrite, retain) NSURL* URL;
+@property (readwrite, retain) NSImage* image;
 @property (readonly) NSInteger version;
 
 - (id)initWithURL:(NSURL*)url;
